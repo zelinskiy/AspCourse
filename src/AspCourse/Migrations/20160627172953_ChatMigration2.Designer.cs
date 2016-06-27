@@ -8,9 +8,10 @@ using AspCourse.Data;
 namespace AspCourse.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
-    partial class ChatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160627172953_ChatMigration2")]
+    partial class ChatMigration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -26,8 +27,6 @@ namespace AspCourse.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("Text");
-
-                    b.Property<int>("TopicId");
 
                     b.HasKey("Id");
 

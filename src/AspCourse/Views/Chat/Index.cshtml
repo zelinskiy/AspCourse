@@ -1,5 +1,35 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@using AspCourse.Models.ChatModels;
+@model AspCourse.Models.ChatModels.ChatViewModels.IndexViewModel
+
+<script>
+
+    function sendNewTopic() {
+        $.post({
+            url: "/Chat/AddNewTopic",
+            data: {
+                NewMessageText: $('#newTopicText').val(),
+                NewTopicTitle: $('#newTopicTitle').val(),
+            },
+            success: function (data) {
+                
+                console.log(data);
+            }
+        });
+    }
+
+</script>
+<br /><br />
+<span>Title: </span><input type="text" id="newTopicTitle" /><br />
+<span>Text: </span><input type="text" id="newTopicText" /><br />
+<button onclick="sendNewTopic()">SEND</button>
+<br />
+
+
+@foreach (Topic t in Model.Topics)
+{
+    <h2><a href="~/Chat/Topic/@t.Id.ToString()">@t.Title</a></h2>
 }
+
+
+
+

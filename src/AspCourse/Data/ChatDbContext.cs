@@ -9,11 +9,10 @@ namespace AspCourse.Data
 {
     public class ChatDbContext:DbContext
     {
-
-        public ChatDbContext():base() { }
+        
 
         public ChatDbContext(DbContextOptions<ChatDbContext> options) 
-            : base(options) { }
+            : base(options) {  }
         
 
 

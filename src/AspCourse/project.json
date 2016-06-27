@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-AspCourse-7d1b5181-7a65-4818-aa76-ef8c4b881341",
 
   "dependencies": {
@@ -37,7 +37,8 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview1-final",
       "type": "build"
-    }
+    },
+    "System.Globalization.Extensions": "4.0.1-rc2-24027"
   },
 
   "tools": {

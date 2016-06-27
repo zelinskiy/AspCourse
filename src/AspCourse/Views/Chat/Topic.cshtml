@@ -1,0 +1,54 @@
+﻿@using AspCourse.Models.ChatModels;
+@model AspCourse.Models.ChatModels.ChatViewModels.TopicViewModel
+
+
+<script>
+
+    
+
+
+    function sendNewMessage() {
+        $.post({
+            url: "/Chat/AddNewMessage",
+            data:{
+                NewMessageText: $('#newMessageText').val(),
+                NewMessageTopicId: @Model.Topic.Id
+            },
+            success: function (data) {
+                console.log(data);
+                //window.location.reload();
+            }
+        });
+    }
+
+
+</script>
+
+<input type="text" id="newMessageText" /><br />
+<button onclick="sendNewMessage()">SEND</button>
+
+<h1>@Model.Topic.Title</h1>
+<hr />
+@{
+    if (Model.Messages != null)
+    {
+        @foreach (Message m in Model.Messages.OrderByDescending(m => m.CreatedAt))
+        {
+            <div class="well">
+                
+                <p>@m.Id - <a href="~/Profile/GetUser/@m.Author.Id.ToString()">@(m.Author.NickName == null ? "Anonymous" : m.Author.NickName)</a> - @m.CreatedAt</p>
+                <p>@m.Text</p>
+            </div>
+            
+        }
+    }
+    else
+    {
+        <h1>No messages found</h1>
+    }
+}
+
+
+
+
+

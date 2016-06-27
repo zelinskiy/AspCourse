@@ -1,0 +1,24 @@
+﻿@model AspCourse.Models.AccountViewModels.ProfileViewModel
+
+@{
+    if (Model.User != null)
+    {
+        <h1>Id: @Model.User.Id</h1>
+        <h1>UserName: @Model.User.UserName</h1>
+        <h1>Registered: @Model.User.RegisteredAt</h1>
+        <h1>Last Seen: @Model.User.LastSeenAt</h1>
+        <h1>NickName: @Model.User.NickName</h1>
+        <h1>Color: @Model.User.Color</h1>
+    }
+    else
+    {
+        <h1>Not found</h1>
+        foreach(string S in (List<string>)ViewData["usernames"])
+        {
+            <p>@S</p>
+
+        }
+
+    }
+}
+

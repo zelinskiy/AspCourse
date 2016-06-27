@@ -9,9 +9,9 @@ namespace AspCourse.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        public string NickName { get; set; } = "Anonymous";
+        public string NickName { get; set; }
 
-        public string AvatarUrl { get; set; } = "https://i.imgur.com/op52w9Q.jpg";
+        public string AvatarUrl { get; set; }
 
         public string Color { get; set; }
 

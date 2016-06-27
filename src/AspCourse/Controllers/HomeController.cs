@@ -3,29 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using AspCourse.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspCourse.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
+        UserManager<ApplicationUser> userManager;
+
+        public HomeController(UserManager<ApplicationUser> _userManager)
+        {
+            userManager = _userManager;
+        }
+
+
         public IActionResult Index()
         {
-            return View();
-        }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
+            var user = userManager.Users.First(u => u.UserName == User.Identity.Name);
 
-            return View();
-        }
+            user.LastSeenAt = DateTime.UtcNow;
+            userManager.UpdateAsync(user);
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
+            
 
             return View();
         }
+
+        
 
         public IActionResult Error()
         {
