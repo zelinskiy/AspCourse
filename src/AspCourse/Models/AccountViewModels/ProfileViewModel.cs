@@ -10,9 +10,13 @@ namespace AspCourse.Models.AccountViewModels
 
         public ApplicationUser User { get; set; }
 
+        public bool IsMyself { get; set; }
+        public bool IsModer { get; set; }
+
         //for setting
         public string NickName { get; set; }
         public string AvatarUrl { get; set; }
         public string Color { get; set; }
+                
     }
 }

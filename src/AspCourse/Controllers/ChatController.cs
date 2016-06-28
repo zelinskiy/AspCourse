@@ -32,10 +32,6 @@ namespace AspCourse.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            chatContext.Messages.Add(new Message() { Text = "lol", AuthorId = "loakf" });
-            chatContext.SaveChanges();
-
-
             IndexViewModel model = new IndexViewModel()
             {
                 Topics = chatContext.Topics.ToList(),                
@@ -69,6 +65,10 @@ namespace AspCourse.Controllers
         [HttpPost]
         public IActionResult AddNewMessage(TopicViewModel model)
         {
+            if (userManager.Users.First(u => u.UserName == User.Identity.Name).IsMuted)
+            {
+                return Json("YOU ARE MUTED");
+            }
 
             Message newMsg = new Message()
             {
@@ -78,7 +78,7 @@ namespace AspCourse.Controllers
                 CreatedAt = DateTime.UtcNow
             };
             chatContext.Messages.Add(newMsg);
-            chatContext.SaveChangesAsync();
+            chatContext.SaveChanges();
 
             return Json("OK");
         }
@@ -86,6 +86,10 @@ namespace AspCourse.Controllers
         [HttpPost]
         public IActionResult AddNewTopic(TopicViewModel model)
         {
+            if(userManager.Users.First(u => u.UserName == User.Identity.Name).IsMuted)
+            {
+                return Json("YOU ARE MUTED");
+            }
 
             Topic newTopic = new Topic()
             {

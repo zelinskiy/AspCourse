@@ -19,17 +19,100 @@
     }
 
 
+    function banUser(time) {
+        $.post({
+            url: "/Profile/Ban/?username=@Model.User.UserName&time=" + time,
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function muteUser(time) {
+        $.post({
+            url: "/Profile/Mute/?username=@Model.User.UserName&time=" + time,
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function unBanUser() {
+        $.post({
+            url: "/Profile/UnBan/?username=@Model.User.UserName",
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function unMuteUser() {
+        $.post({
+            url: "/Profile/UnMute/?username=@Model.User.UserName",
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+
 </script>
 
+@{ 
+    if (Model.User.IsBanned)
+    {
+        <h1>BANNED</h1>
+        <p>@Model.User.BannedUntil</p>
+    }
+    if (Model.User.IsMuted)
+    {
+        <h1>MUTED</h1>
+        <p>@Model.User.MutedUntil</p>
+    }
+}
 
+@{
+    if (Model.IsModer)
+    {       
+        if (Model.User.IsBanned)
+        {
+            <button onclick="unBanUser()">UNBAN</button>
+        }
+        else
+        {
+            <button onclick="banUser(10)">BAN 10 MINUTES</button>
+        }
+        if (Model.User.IsMuted)
+        {
+            <button onclick="unMuteUser()">UNMUTE</button>
+        }
+        else
+        {
+            <button onclick="muteUser(10)">MUTE 10 MINUTES</button>
+        }
+
+    }
+}
+<hr />
 <img src="@Model.User.AvatarUrl" width="100px"/>
 <hr />
 <p>Id: @Model.User.Id</p>
+<p>NickName: @Model.User.NickName</p>
 <p>UserName: @Model.User.UserName</p>
 <p>Registered: @Model.User.RegisteredAt</p>
 <p>Last Seen: @Model.User.LastSeenAt</p>
 <hr />
-<p>Color:<input type="color" id="ColorPicker" value="@Model.User.Color" /></p>
-<p>Avatar:<input type="text" id="AvatarUrlPicker" value="@Model.User.AvatarUrl" /></p>
-<p>NickName:<input type="text" id="NickNamePicker" value="@Model.User.NickName" /></p>
-<p><button onclick="updateUserData()">Update profile</button></p>
+
+<hr />
+@{
+    if (Model.IsMyself)
+    {
+        <p>Color: <input type="color" id="ColorPicker" value="@Model.User.Color" /></p>
+        <p>Avatar: <input type="text" id="AvatarUrlPicker" value="@Model.User.AvatarUrl" /></p>
+        <p>NickName: <input type="text" id="NickNamePicker" value="@Model.User.NickName" /></p>
+        <p><button onclick="updateUserData()">Update profile</button></p>
+    }
+
+    
+}
+

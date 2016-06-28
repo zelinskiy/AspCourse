@@ -112,9 +112,10 @@ namespace AspCourse.Controllers
                 user.Color = "#9bbaca";
                 user.AvatarUrl = "https://i.imgur.com/2h8WWXC.jpg";
                 user.NickName = "Anonymous";
-
-
+                                
                 var result = await _userManager.CreateAsync(user, model.Password);
+                await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "user"));
+
                 if (result.Succeeded)
                 {                    
 
