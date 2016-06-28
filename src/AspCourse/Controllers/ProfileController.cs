@@ -33,11 +33,13 @@ namespace AspCourse.Controllers
             userManager = _userManager;
             serviceProvider = _serviceProvider;
             roleManager = (RoleManager<IdentityRole>)serviceProvider.GetService(typeof(ApplicationRoleManager));
+            //SetupRoles();
         }
         
         private async void SetupRoles()
         {
             await roleManager.CreateAsync(new IdentityRole { Name = "user" });
+            await roleManager.CreateAsync(new IdentityRole { Name = "moder" });
         }
 
 
