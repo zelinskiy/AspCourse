@@ -1,0 +1,19 @@
+﻿@model AspCourse.Models.AccountViewModels.AllProfilesViewModel
+
+<script>
+    
+
+
+</script>
+
+@{ 
+    foreach (var user in Model.Users.OrderBy(u => (u.IsBanned ? 10 : 0) + (u.IsMuted ? 5 : 0)))
+    {
+
+        <p><a href="/Porfile/GetUser/?username=@user.UserName">@user.NickName</a></p>
+        <p>@user.UserName - @user.LastSeenAt - @user.RegisteredAt - Muted:@user.IsMuted - Banned:@user.IsBanned</p>
+        <p>Messages: @Model.Messages.Where(m=>m.AuthorId==user.UserName).Count()</p>
+        <p>Last Message at: @Model.Messages.Where(m => m.AuthorId == user.UserName).OrderBy(m=>m.CreatedAt).Last().CreatedAt</p>
+        <hr />
+    }
+}

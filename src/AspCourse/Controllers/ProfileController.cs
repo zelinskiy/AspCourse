@@ -66,6 +66,20 @@ namespace AspCourse.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult AllProfiles()
+        {
+            var model = new AllProfilesViewModel()
+            {
+                Users = userManager.Users.ToList(),
+                Messages = chatContext.Messages.ToList()
+            };
+            
+
+            return View("~/Views/Profile/AllProfiles.cshtml", model);
+
+        }
+
         //**************************************
 
         [HttpPost]

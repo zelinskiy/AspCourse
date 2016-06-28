@@ -245,6 +245,7 @@ C:\Projects\AspCourse\src\AspCourse\Migrations\20160627192249_MyChatMigration5.c
 C:\Projects\AspCourse\src\AspCourse\Migrations\20160627192249_MyChatMigration5.Designer.cs
 C:\Projects\AspCourse\src\AspCourse\Migrations\ChatDbContextModelSnapshot.cs
 C:\Projects\AspCourse\src\AspCourse\Models\ApplicationUser.cs
+C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\AdminPanelViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\ExternalLoginConfirmationViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\ForgotPasswordViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\LoginViewModel.cs
