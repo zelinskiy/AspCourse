@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using AspCourse.Models;
 using AspCourse.Models.AccountViewModels;
 using AspCourse.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace AspCourse.Controllers
 {
@@ -23,18 +24,25 @@ namespace AspCourse.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
+        RoleManager<IdentityRole> _roleManager;
+
+
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IServiceProvider serviceProvider
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            _roleManager = (RoleManager<IdentityRole>)serviceProvider.GetService(typeof(ApplicationRoleManager));
+
         }
 
         //
@@ -43,7 +51,7 @@ namespace AspCourse.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
+            ViewData["ReturnUrl"] = returnUrl;            
             return View();
         }
 
@@ -61,11 +69,26 @@ namespace AspCourse.Controllers
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
+
                     
-                    return RedirectToLocal(returnUrl);
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    
+                    if (user.IsBanned)
+                    {
+                        await _signInManager.SignOutAsync();
+                        return RedirectToAction("Banned", "Home");
+                    }
+                    else
+                    {
+                        return RedirectToLocal(returnUrl);
+                    }
+                    
+                    
+                    
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -112,9 +135,12 @@ namespace AspCourse.Controllers
                 user.Color = "#9bbaca";
                 user.AvatarUrl = "https://i.imgur.com/2h8WWXC.jpg";
                 user.NickName = "Anonymous";
+
+
                                 
                 var result = await _userManager.CreateAsync(user, model.Password);
-                await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "user"));
+                //await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "user"));
+                await _userManager.AddToRoleAsync(user, "user");
 
                 if (result.Succeeded)
                 {                    

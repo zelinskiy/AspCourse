@@ -50,8 +50,10 @@ namespace AspCourse
 
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddRoleManager<ApplicationRoleManager>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            
 
             services.AddMvc();
 

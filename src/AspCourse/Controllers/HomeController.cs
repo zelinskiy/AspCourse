@@ -12,7 +12,7 @@ namespace AspCourse.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        UserManager<ApplicationUser> userManager;
+        public UserManager<ApplicationUser> userManager;
 
         public HomeController(UserManager<ApplicationUser> _userManager)
         {
@@ -37,6 +37,24 @@ namespace AspCourse.Controllers
 
         public IActionResult Error()
         {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Banned()
+        {
+            foreach (var u in userManager.Users.Where(u => u.IsBanned || u.IsMuted).ToList())
+            {
+                if (u.BannedUntil.ToUniversalTime() < DateTime.UtcNow)
+                {
+                    u.IsBanned = false;
+                }
+                if (u.MutedUntil.ToUniversalTime() < DateTime.UtcNow)
+                {
+                    u.IsMuted = false;
+                }
+                await userManager.UpdateAsync(u);
+            }
             return View();
         }
     }

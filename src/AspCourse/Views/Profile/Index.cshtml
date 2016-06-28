@@ -2,6 +2,7 @@
 
 <script>
 
+    var isModer = false;
 
     function updateUserData() {
         $.post({
@@ -13,7 +14,7 @@
             },
             success: function (data) {
                 console.log(data);
-                //window.location.reload();
+                window.location.reload();
             }
         });
     }
@@ -24,6 +25,7 @@
             url: "/Profile/Ban/?username=@Model.User.UserName&time=" + time,
             success: function (data) {
                 console.log(data);
+                window.location.reload();
             }
         });
     }
@@ -33,6 +35,7 @@
             url: "/Profile/Mute/?username=@Model.User.UserName&time=" + time,
             success: function (data) {
                 console.log(data);
+                window.location.reload();
             }
         });
     }
@@ -42,6 +45,7 @@
             url: "/Profile/UnBan/?username=@Model.User.UserName",
             success: function (data) {
                 console.log(data);
+                window.location.reload();
             }
         });
     }
@@ -51,9 +55,44 @@
             url: "/Profile/UnMute/?username=@Model.User.UserName",
             success: function (data) {
                 console.log(data);
+                window.location.reload();
             }
         });
     }
+
+    function isUserModer() {
+        $.post({
+            url: "/Profile/IsModer/?username=@Model.User.UserName",
+            success: function (data) {
+                console.log(data);
+                if (data.toString().indexOf("true")>-1) {
+                    $("#toggleModerButton").css("background-color", "green");
+                }
+                else {
+                    $("#toggleModerButton").css("background-color", "red");
+                }
+            }
+        });
+    }
+
+
+    function toggleUserModer() {
+        $.post({
+            url: "/Profile/ToggleModer/?username=@Model.User.UserName",
+            success: function (data) {
+                console.log(data);
+                isUserModer();
+            }
+        });
+    }
+
+
+
+    $(document).ready(function () {
+        isUserModer();
+
+    });
+
 
 
 </script>
@@ -91,16 +130,18 @@
             <button onclick="muteUser(10)">MUTE 10 MINUTES</button>
         }
 
+        <button id="toggleModerButton" onclick="toggleUserModer()">MODER</button>
     }
 }
 <hr />
+
 <img src="@Model.User.AvatarUrl" width="100px"/>
 <hr />
 <p>Id: @Model.User.Id</p>
 <p>NickName: @Model.User.NickName</p>
 <p>UserName: @Model.User.UserName</p>
-<p>Registered: @Model.User.RegisteredAt</p>
-<p>Last Seen: @Model.User.LastSeenAt</p>
+<p>Registered: @Model.User.RegisteredAt.ToLocalTime()</p>
+<p>Last Seen: @Model.User.LastSeenAt.ToLocalTime()</p>
 <hr />
 
 <hr />

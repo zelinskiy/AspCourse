@@ -16,7 +16,7 @@
             },
             success: function (data) {
                 console.log(data);
-                //window.location.reload();
+                window.location.reload();
             }
         });
     }
@@ -26,7 +26,8 @@
             url: "/Chat/RemoveMessage/?id=" + id,
             type:"DELETE",
             success:function(data){
-                console.log(data);            
+                console.log(data);   
+                window.location.reload();
             }
         })    
     }

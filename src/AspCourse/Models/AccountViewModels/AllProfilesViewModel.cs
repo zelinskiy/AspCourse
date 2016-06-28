@@ -11,4 +11,5 @@ namespace AspCourse.Models.AccountViewModels
         public List<ApplicationUser> Users { get; set; }
         public List<Message> Messages { get; set; }
     }
+    
 }

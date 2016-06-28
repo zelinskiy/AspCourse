@@ -29,14 +29,16 @@ namespace AspCourse.Controllers
         }
 
 
+
         [HttpGet]
-        public IActionResult Index()
+         public IActionResult Index()
         {
             IndexViewModel model = new IndexViewModel()
             {
                 Topics = chatContext.Topics.ToList(),
                 IsModer = User.IsInRole("moder"),                
-            };
+            };           
+
             return View(model);
         }
 
@@ -55,6 +57,8 @@ namespace AspCourse.Controllers
                     .ToList(),
                 IsModer = User.IsInRole("moder"),
             };
+
+
 
             foreach(Message m in model.Messages)
             {
@@ -153,8 +157,7 @@ namespace AspCourse.Controllers
             else
             {
                 return Json("Not allowed");
-            }
-            
+            }            
         }
 
 

@@ -17,14 +17,28 @@ namespace AspCourse.Controllers
     public class ProfileController : Controller
     {       
         public ChatDbContext chatContext;
+        public ApplicationDbContext appContext;
         UserManager<ApplicationUser> userManager;
+        IServiceProvider serviceProvider;
+        RoleManager<IdentityRole> roleManager;
 
-        public ProfileController(ChatDbContext context, UserManager<ApplicationUser> _userManager)
+
+        public ProfileController(ChatDbContext context,
+            ApplicationDbContext _appContext,
+            IServiceProvider _serviceProvider,
+            UserManager<ApplicationUser> _userManager)
         {
             chatContext = context;
+            appContext = _appContext;
             userManager = _userManager;
+            serviceProvider = _serviceProvider;
+            roleManager = (RoleManager<IdentityRole>)serviceProvider.GetService(typeof(ApplicationRoleManager));
         }
         
+        private async void SetupRoles()
+        {
+            await roleManager.CreateAsync(new IdentityRole { Name = "user" });
+        }
 
 
         [HttpGet]
@@ -74,8 +88,22 @@ namespace AspCourse.Controllers
                 Users = userManager.Users.ToList(),
                 Messages = chatContext.Messages.ToList()
             };
-            
 
+            ViewData["ListTitle"] = "All Users";
+            return View("~/Views/Profile/AllProfiles.cshtml", model);
+
+        }
+
+        [HttpGet]
+        public async  Task<IActionResult> AllModers()
+        {
+            var model = new AllProfilesViewModel()
+            {
+                Users = (await userManager.GetUsersInRoleAsync("moder")).ToList(),
+                Messages = chatContext.Messages.ToList()    
+            };
+
+            ViewData["ListTitle"] = "Moderators";
             return View("~/Views/Profile/AllProfiles.cshtml", model);
 
         }
@@ -159,5 +187,40 @@ namespace AspCourse.Controllers
             return Json("UnBanned");
 
         }
+
+
+        [HttpPost]
+        async public Task<IActionResult> IsModer(string username)
+        {
+            var user = userManager.Users.First(u => u.UserName == username);
+            return Json(await userManager.IsInRoleAsync(user, "moder"));
+        }
+
+        [HttpPost]
+        async public Task<IActionResult> ToggleModer(string username)
+        {
+            if (User.IsInRole("moder"))
+            {
+                var user = userManager.Users.First(u => u.UserName == username);
+                bool isModer = await userManager.IsInRoleAsync(user, "moder");
+                if (isModer)
+                {
+                    await userManager.RemoveFromRoleAsync(user, "moder");
+                }
+                else
+                {
+                    await userManager.AddToRoleAsync(user, "moder");
+                }
+
+                return Json("Swithed to:"+(await userManager.IsInRoleAsync(user, "moder")));
+            }
+            else
+            {
+                return Json("Operation not permitted");
+            }
+            
+        }
+
+
     }
 }
