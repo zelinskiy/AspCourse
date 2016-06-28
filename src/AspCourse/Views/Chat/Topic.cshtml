@@ -34,9 +34,9 @@
     {
         @foreach (Message m in Model.Messages.OrderByDescending(m => m.CreatedAt))
         {
-            <div class="well">
-                
-                <p>@m.Id - <a href="~/Profile/GetUser/@m.Author.Id.ToString()">@(m.Author.NickName == null ? "Anonymous" : m.Author.NickName)</a> - @m.CreatedAt</p>
+            <div class="well" style="background-color:@m.Author.Color">
+                <img src="@m.Author.AvatarUrl" width="50px" />            
+                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@(m.Author.NickName == null ? "Anonymous" : m.Author.NickName)</a> - @m.CreatedAt</p>
                 <p>@m.Text</p>
             </div>
             

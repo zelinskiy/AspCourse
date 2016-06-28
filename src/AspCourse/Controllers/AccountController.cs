@@ -109,6 +109,10 @@ namespace AspCourse.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 user.RegisteredAt = DateTime.UtcNow;
+                user.Color = "#9bbaca";
+                user.AvatarUrl = "https://i.imgur.com/2h8WWXC.jpg";
+                user.NickName = "Anonymous";
+
 
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

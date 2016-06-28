@@ -1,24 +1,35 @@
 ﻿@model AspCourse.Models.AccountViewModels.ProfileViewModel
 
-@{
-    if (Model.User != null)
-    {
-        <h1>Id: @Model.User.Id</h1>
-        <h1>UserName: @Model.User.UserName</h1>
-        <h1>Registered: @Model.User.RegisteredAt</h1>
-        <h1>Last Seen: @Model.User.LastSeenAt</h1>
-        <h1>NickName: @Model.User.NickName</h1>
-        <h1>Color: @Model.User.Color</h1>
+<script>
+
+
+    function updateUserData() {
+        $.post({
+            url: "/Profile/UpdateUser",
+            data:{
+                NickName:$("#NickNamePicker").val(),
+                AvatarUrl: $("#AvatarUrlPicker").val(),
+                Color: $("#ColorPicker").val()
+            },
+            success: function (data) {
+                console.log(data);
+                //window.location.reload();
+            }
+        });
     }
-    else
-    {
-        <h1>Not found</h1>
-        foreach(string S in (List<string>)ViewData["usernames"])
-        {
-            <p>@S</p>
 
-        }
 
-    }
-}
+</script>
 
+
+<img src="@Model.User.AvatarUrl" width="100px"/>
+<hr />
+<p>Id: @Model.User.Id</p>
+<p>UserName: @Model.User.UserName</p>
+<p>Registered: @Model.User.RegisteredAt</p>
+<p>Last Seen: @Model.User.LastSeenAt</p>
+<hr />
+<p>Color:<input type="color" id="ColorPicker" value="@Model.User.Color" /></p>
+<p>Avatar:<input type="text" id="AvatarUrlPicker" value="@Model.User.AvatarUrl" /></p>
+<p>NickName:<input type="text" id="NickNamePicker" value="@Model.User.NickName" /></p>
+<p><button onclick="updateUserData()">Update profile</button></p>

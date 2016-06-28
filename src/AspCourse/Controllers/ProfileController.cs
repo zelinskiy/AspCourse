@@ -41,10 +41,29 @@ namespace AspCourse.Controllers
         {
 
             var model = new ProfileViewModel();
-            model.User = userManager.Users.FirstOrDefault(u => u.Id.ToString()==username);
-            
-            ViewData["usernames"] = userManager.Users.Select(u => u.Id).ToList();
+            model.User = userManager.Users.FirstOrDefault(u => u.UserName==username);
+
+            if(model.User == null)
+            {
+                return View("~/Views/Shared/Error.cshtml");
+            }
+
             return View("~/Views/Profile/Index.cshtml", model);
+
+        }
+
+
+        [HttpPost]
+        public IActionResult UpdateUser(ProfileViewModel model)
+        {
+            
+            var me = userManager.Users.First(u => u.UserName == User.Identity.Name);
+            me.Color = model.Color;
+            me.AvatarUrl = model.AvatarUrl;
+            me.NickName = model.NickName;
+            userManager.UpdateAsync(me);
+
+            return Json($"User {me.UserName} updated ");
 
         }
     }
