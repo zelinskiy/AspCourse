@@ -17,6 +17,16 @@
         });
     }
 
+    function removeTopic(id) {
+        $.post({
+            url: "/Chat/RemoveTopic/?id=" + id,
+            type:"DELETE",
+            success: function (data) {
+                console.log(data);
+            }
+        })
+    }
+
 </script>
 <br /><br />
 <span>Title: </span><input type="text" id="newTopicTitle" /><br />
@@ -27,7 +37,19 @@
 
 @foreach (Topic t in Model.Topics)
 {
-    <h2><a href="~/Chat/Topic/@t.Id.ToString()">@t.Title</a></h2>
+    <h2>
+        <a href="~/Chat/Topic/@t.Id.ToString()">@t.Title</a>
+        @{
+            if (Model.IsModer)
+            {
+                <span style="font-size:12px">
+                    <button onclick="removeTopic(@t.Id)">DELETE</button>
+                    <button onclick="stickTopic(@t.Id)">STICK</button>
+                    <button onclick="closeTopic(@t.Id)">CLOSE</button>
+                </span>
+            }
+        }
+    </h2>
 }
 
 

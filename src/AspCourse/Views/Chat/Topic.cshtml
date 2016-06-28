@@ -12,13 +12,23 @@
             url: "/Chat/AddNewMessage",
             data:{
                 NewMessageText: $('#newMessageText').val(),
-                NewMessageTopicId: @Model.Topic.Id
+                NewMessageTopicId: "@Model.Topic.Id"
             },
             success: function (data) {
                 console.log(data);
                 //window.location.reload();
             }
         });
+    }
+
+    function removeMessage(id){
+        $.ajax({
+            url: "/Chat/RemoveMessage/?id=" + id,
+            type:"DELETE",
+            success:function(data){
+                console.log(data);            
+            }
+        })    
     }
 
 
@@ -39,6 +49,14 @@
                 <img src="@m.Author.AvatarUrl" width="50px" />            
                 <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@(m.Author.NickName == null ? "Anonymous" : m.Author.NickName)</a> - @m.CreatedAt</p>
                 <p>@m.Text</p>
+
+                @{
+                    if (Model.IsModer)
+                    {
+                        <button onclick="removeMessage(@m.Id)">DELETE</button>
+                    }
+                }
+
             </div>
             
         }

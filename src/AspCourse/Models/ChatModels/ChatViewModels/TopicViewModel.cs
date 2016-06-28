@@ -15,5 +15,7 @@ namespace AspCourse.Models.ChatModels.ChatViewModels
         public int NewMessageTopicId { get; set; }
 
         public string NewTopicTitle { get; set; }
+
+        public bool IsModer { get; set; }
     }
 }

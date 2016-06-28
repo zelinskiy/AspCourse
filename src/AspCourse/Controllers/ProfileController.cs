@@ -66,6 +66,7 @@ namespace AspCourse.Controllers
 
         }
 
+        //**************************************
 
         [HttpPost]
         public IActionResult UpdateUser(ProfileViewModel model)
@@ -81,10 +82,7 @@ namespace AspCourse.Controllers
             return Json($"User {me.UserName} updated ");
 
         }
-
-
-
-
+        
         [HttpPost]
         async public Task<IActionResult> Mute(string username, int time)
         {

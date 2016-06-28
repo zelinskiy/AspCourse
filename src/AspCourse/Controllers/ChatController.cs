@@ -34,7 +34,8 @@ namespace AspCourse.Controllers
         {
             IndexViewModel model = new IndexViewModel()
             {
-                Topics = chatContext.Topics.ToList(),                
+                Topics = chatContext.Topics.ToList(),
+                IsModer = User.IsInRole("moder"),                
             };
             return View(model);
         }
@@ -52,6 +53,7 @@ namespace AspCourse.Controllers
                 Messages = chatContext.Messages
                     .Where(m=>m.TopicId==topic.Id)
                     .ToList(),
+                IsModer = User.IsInRole("moder"),
             };
 
             foreach(Message m in model.Messages)
@@ -61,6 +63,10 @@ namespace AspCourse.Controllers
 
             return View(model);
         }
+
+
+        //***************************************
+
 
         [HttpPost]
         public IActionResult AddNewMessage(TopicViewModel model)
@@ -118,9 +124,42 @@ namespace AspCourse.Controllers
             
         }
 
+        [HttpDelete]
+        public IActionResult RemoveMessage(int id)
+        {
+            if (User.IsInRole("moder"))
+            {
+                var msg = chatContext.Messages.First(m => m.Id == id);
+                chatContext.Messages.Remove(msg);
+                chatContext.SaveChanges();
+                return Json("Message removed");
+            }
+            else
+            {
+                return Json("Not allowed");
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult RemoveTopic(int id)
+        {
+            if (User.IsInRole("moder"))
+            {
+                var topic = chatContext.Topics.First(t => t.Id == id);
+                chatContext.Topics.Remove(topic);
+                chatContext.SaveChanges();
+                return Json("Topic removed");
+            }
+            else
+            {
+                return Json("Not allowed");
+            }
+            
+        }
 
 
 
-        
+
+
     }
 }

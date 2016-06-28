@@ -10,6 +10,8 @@ namespace AspCourse.Models.ChatModels.ChatViewModels
         public List<Topic> Topics { get; set; }
         public List<Message> OpPosts { get; set; }
 
+        public bool IsModer { get; set; }
+
     }
     
 
