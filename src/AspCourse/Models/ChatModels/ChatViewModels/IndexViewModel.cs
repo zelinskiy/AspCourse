@@ -7,8 +7,8 @@ namespace AspCourse.Models.ChatModels.ChatViewModels
 {
     public class IndexViewModel
     {
-        public List<Topic> Topics { get; set; }
-        public List<Message> OpPosts { get; set; }
+
+        public List<Tuple<Topic, List<Message>, DateTime>> Previews { get; set; }
 
         public bool IsModer { get; set; }
 

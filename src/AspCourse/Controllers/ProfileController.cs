@@ -10,6 +10,7 @@ using AspCourse.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Security.Claims;
+using AspCourse.Models.ChatModels;
 
 namespace AspCourse.Controllers
 {
@@ -51,7 +52,13 @@ namespace AspCourse.Controllers
             model.IsModer = User.IsInRole("moder");
             model.User = userManager.Users.First(u => u.UserName == User.Identity.Name);
             
-
+            model.UserTopicsMessages = chatContext.Messages
+                .Where(m => m.AuthorId == User.Identity.Name)
+                .GroupBy(m => m.TopicId)
+                .Select(g => new Tuple<Topic, List<Message>>(
+                    chatContext.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
+                    g.ToList()))
+                .ToList();
             //userManager.AddClaimAsync(model.User, new Claim(ClaimTypes.Role, "moder"));
             //userManager.AddClaimAsync(model.User, new Claim(ClaimTypes.Role, "user"));
 
@@ -67,8 +74,17 @@ namespace AspCourse.Controllers
             model.IsMyself = false;
             model.IsModer = User.IsInRole("moder");
             model.User = userManager.Users.FirstOrDefault(u => u.UserName==username);
+            
+            model.UserTopicsMessages = chatContext.Messages
+                .Where(m => m.AuthorId == username)
+                .GroupBy(m => m.TopicId)
+                .Select(g => new Tuple<Topic, List<Message>>(
+                    chatContext.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
+                    g.ToList()))
+                .ToList();
+                    
 
-            if(model.User.UserName == User.Identity.Name)
+            if (model.User.UserName == User.Identity.Name)
             {
                 return RedirectToAction("Index");
             }

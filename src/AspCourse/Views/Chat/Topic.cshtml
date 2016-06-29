@@ -35,21 +35,28 @@
 
 </script>
 
+<h1>
+    @if (Model.Topic.IsSticky)
+    {
+        <abbr title="Thread is sticky"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></abbr>
+    }
+    @if (Model.Topic.IsClosed)
+    {
+        <abbr title="Thread is closed"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></abbr>
+        
+    }
 
-<br />
-<p><textarea id="newMessageText" style="max-width:30vw;width:30vw; height:150px" placeholder="Enter Message text here"></textarea></p>
-<p><button class="btn btn-default" onclick="sendNewMessage()">Send</button></p>
-
-<h1>@Model.Topic.Title</h1>
+    @Model.Topic.Title
+</h1>
 <hr />
 @{
     if (Model.Messages != null)
     {
-        @foreach (Message m in Model.Messages.OrderByDescending(m => m.CreatedAt))
+        @foreach (Message m in Model.Messages.OrderBy(m => m.CreatedAt))
         {
-            <div class="well" style="width:30vw;background-color:@m.Author.Color">
-                <img src="@m.Author.AvatarUrl" width="50px" />            
-                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@(m.Author.NickName == null ? "Anonymous" : m.Author.NickName)</a> - @m.CreatedAt</p>
+            <div class="well" style="background-color:@m.Author.Color">
+                <img src="@m.Author.AvatarUrl" width="50" />            
+                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
                 <p>@m.Text</p>
 
                 @{
@@ -58,7 +65,6 @@
                         <button onclick="removeMessage(@m.Id)">DELETE</button>
                     }
                 }
-
             </div>
             
         }
@@ -67,6 +73,12 @@
     {
         <h1>No messages found</h1>
     }
+}
+@if (!Model.Topic.IsClosed)
+{
+    <br />
+    <p><textarea id="newMessageText" style="height:150px;width:500px" placeholder="Enter Message text here"></textarea></p>
+    <p><button class="btn btn-default" onclick="sendNewMessage()">Send</button></p>
 }
 
 

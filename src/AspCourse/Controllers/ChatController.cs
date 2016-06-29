@@ -33,9 +33,33 @@ namespace AspCourse.Controllers
         [HttpGet]
          public IActionResult Index()
         {
+
+            var previews = new List<Tuple<Topic, List<Message>, DateTime>>();
+
+            foreach(Topic t in chatContext.Topics.ToList())
+            {
+                var messagesInTopic = chatContext
+                    .Messages
+                    .Where(m => m.TopicId == t.Id)
+                    .OrderBy(m=>m.CreatedAt);
+
+                foreach (Message m in messagesInTopic)
+                {
+                    m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorId);
+                }
+
+                previews.Add(new Tuple<Topic, List<Message>, DateTime>(
+                    t,
+                    messagesInTopic.Take(3).ToList(),
+                    messagesInTopic.Count()>0?messagesInTopic.Last().CreatedAt:DateTime.MinValue
+                    ));
+            }
+
+            
+
             IndexViewModel model = new IndexViewModel()
             {
-                Topics = chatContext.Topics.ToList(),
+                Previews = previews,
                 IsModer = User.IsInRole("moder"),                
             };           
 
@@ -79,6 +103,17 @@ namespace AspCourse.Controllers
             {
                 return Json("YOU ARE MUTED");
             }
+
+            var topic = chatContext.Topics.First(t => t.Id == model.NewMessageTopicId);
+            if (topic==null)
+            {
+                return Json("TOPIC NOT FOUND");
+            }
+            else if (topic.IsClosed)
+            {
+                return Json("YOU CANT POST TO CLOSED TOPIC");
+            }
+
 
             Message newMsg = new Message()
             {
@@ -129,35 +164,48 @@ namespace AspCourse.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "moder")]
         public IActionResult RemoveMessage(int id)
         {
-            if (User.IsInRole("moder"))
-            {
-                var msg = chatContext.Messages.First(m => m.Id == id);
-                chatContext.Messages.Remove(msg);
-                chatContext.SaveChanges();
-                return Json("Message removed");
-            }
-            else
-            {
-                return Json("Not allowed");
-            }
+            var msg = chatContext.Messages.First(m => m.Id == id);
+            chatContext.Messages.Remove(msg);
+            chatContext.SaveChanges();
+            return Json("Message removed");
+            
         }
 
         [HttpDelete]
+        [Authorize(Roles = "moder")]
         public IActionResult RemoveTopic(int id)
         {
-            if (User.IsInRole("moder"))
-            {
-                var topic = chatContext.Topics.First(t => t.Id == id);
-                chatContext.Topics.Remove(topic);
-                chatContext.SaveChanges();
-                return Json("Topic removed");
-            }
-            else
-            {
-                return Json("Not allowed");
-            }            
+            var topic = chatContext.Topics.First(t => t.Id == id);
+            chatContext.Topics.Remove(topic);
+            chatContext.SaveChanges();
+            return Json("Topic removed");
+                     
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="moder")]
+        public IActionResult ToggleTopicSticky(int id)
+        {
+            var topic = chatContext.Topics.First(t => t.Id == id);
+            topic.IsSticky = !topic.IsSticky;
+            chatContext.Topics.Update(topic);
+            chatContext.SaveChanges();
+            return Json($"Topic sticky: {topic.IsSticky}");            
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "moder")]
+        public IActionResult ToggleTopicClosed(int id)
+        {
+            var topic = chatContext.Topics.First(t => t.Id == id);
+            topic.IsClosed = !topic.IsClosed;
+            chatContext.Topics.Update(topic);
+            chatContext.SaveChanges();
+            return Json($"Topic closed: {topic.IsClosed}");
+            
         }
 
 

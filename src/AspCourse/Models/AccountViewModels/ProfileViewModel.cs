@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AspCourse.Models.ChatModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace AspCourse.Models.AccountViewModels
     {
 
         public ApplicationUser User { get; set; }
+        public List<Tuple<Topic, List<Message>>> UserTopicsMessages { get; set; }
 
         public bool IsMyself { get; set; }
         public bool IsModer { get; set; }

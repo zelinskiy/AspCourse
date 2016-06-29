@@ -28,6 +28,31 @@
         })
     }
 
+
+    function toggleTopicSticked(id){
+        $.post({
+            url: "/Chat/ToggleTopicSticky/?id=" + id,
+            type:"POST",
+            success: function (data) {
+                console.log(data);
+                window.location.reload();
+            }
+        })    
+    }
+
+
+    function toggleTopicClosed(id){
+        $.post({
+            url: "/Chat/ToggleTopicClosed/?id=" + id,
+            type:"POST",
+            success: function (data) {
+                console.log(data);
+                window.location.reload();
+            }
+        })    
+    }
+
+
 </script>
 <br /><br />
 <p><input class="form-control" placeholder="New Topic Title" type="text" id="newTopicTitle" /></p>
@@ -36,22 +61,84 @@
 <br />
 
 
-@foreach (Topic t in Model.Topics)
-{
-    <h2>
-        <a href="~/Chat/Topic/@t.Id.ToString()">@t.Title</a>
-        @{
-            if (Model.IsModer)
+@{
+    foreach (var p in Model.Previews.OrderByDescending(p => p.Item3).OrderByDescending(p => p.Item1.IsSticky))
+    {
+        Topic t = p.Item1;
+        Message opMessage = p.Item2.FirstOrDefault();
+
+
+
+        <div class="well" style="background-color:@opMessage?.Author.Color">
+            <h2>
+                @if (t.IsSticky)
+                {
+                    <abbr title="Thread is sticky"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></abbr>
+                }
+                @if (t.IsClosed)
+                {
+                    <abbr title="Thread is closed"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></abbr>
+                }
+
+
+                <a href="~/Chat/Topic/@t.Id.ToString()">@t.Title</a>
+
+
+                @if (Model.IsModer)
+                {
+                    <span style="font-size:12px">
+
+                        <button onclick="removeTopic(@t.Id)">DELETE</button>
+
+                        @if (t.IsSticky)
+                        {
+                            <button style="background-color:green" onclick="toggleTopicSticked(@t.Id)">STICKED</button>
+                        }
+                        else
+                        {
+                            <button style="background-color:red" onclick="toggleTopicSticked(@t.Id)">STICKED</button>
+                        }
+                        @if (t.IsClosed)
+                        {
+                            <button style="background-color:green" onclick="toggleTopicClosed(@t.Id)">CLOSED</button>
+                        }
+                        else
+                        {
+                            <button style="background-color:red" onclick="toggleTopicClosed(@t.Id)">CLOSED</button>
+                        }
+
+                    </span>
+                }                
+
+            </h2>
+            @if (opMessage != null)
             {
-                <span style="font-size:12px">
-                    <button onclick="removeTopic(@t.Id)">DELETE</button>
-                    <button onclick="stickTopic(@t.Id)">STICK</button>
-                    <button onclick="closeTopic(@t.Id)">CLOSE</button>
-                </span>
+                <hr />
+                    <img src="@opMessage.Author.AvatarUrl" width="50" />
+                    <p>@opMessage.Id - <a href="~/Profile/GetUser/?username=@opMessage.AuthorId">@opMessage.Author.NickName</a> - @opMessage.CreatedAt.ToLocalTime()</p>
+                    <p>@opMessage.Text</p>
             }
-        }
-    </h2>
+        </div>
+        <div style="margin-left:30px">
+            @{
+                foreach(Message m in p.Item2.Skip(1).ToList())
+                {
+                    <div class="well" style="background-color:@m.Author.Color">
+                        <img src="@m.Author.AvatarUrl" width="50" />            
+                        <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
+                        <p>@m.Text</p>
+
+                    </div>
+                }
+            }
+        </div>
+    }
 }
+
+
+
+
+
 
 
 
