@@ -227,6 +227,7 @@ C:\Projects\AspCourse\src\AspCourse\Controllers\AccountController.cs
 C:\Projects\AspCourse\src\AspCourse\Controllers\ChatController.cs
 C:\Projects\AspCourse\src\AspCourse\Controllers\HomeController.cs
 C:\Projects\AspCourse\src\AspCourse\Controllers\ManageController.cs
+C:\Projects\AspCourse\src\AspCourse\Controllers\ProfileController.cs
 C:\Projects\AspCourse\src\AspCourse\Data\ApplicationDbContext.cs
 C:\Projects\AspCourse\src\AspCourse\Data\ChatDbContext.cs
 C:\Projects\AspCourse\src\AspCourse\Data\Migrations\00000000000000_CreateIdentitySchema.cs
@@ -242,11 +243,16 @@ C:\Projects\AspCourse\src\AspCourse\Migrations\20160627182224_ChatMigration3.cs
 C:\Projects\AspCourse\src\AspCourse\Migrations\20160627182224_ChatMigration3.Designer.cs
 C:\Projects\AspCourse\src\AspCourse\Migrations\20160627192249_MyChatMigration5.cs
 C:\Projects\AspCourse\src\AspCourse\Migrations\20160627192249_MyChatMigration5.Designer.cs
+C:\Projects\AspCourse\src\AspCourse\Migrations\20160629103703_MessagePicsMigration.cs
+C:\Projects\AspCourse\src\AspCourse\Migrations\20160629103703_MessagePicsMigration.Designer.cs
 C:\Projects\AspCourse\src\AspCourse\Migrations\ChatDbContextModelSnapshot.cs
+C:\Projects\AspCourse\src\AspCourse\Models\ApplicationRoleManager.cs
 C:\Projects\AspCourse\src\AspCourse\Models\ApplicationUser.cs
+C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\AllProfilesViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\ExternalLoginConfirmationViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\ForgotPasswordViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\LoginViewModel.cs
+C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\ProfileViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\RegisterViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\ResetPasswordViewModel.cs
 C:\Projects\AspCourse\src\AspCourse\Models\AccountViewModels\SendCodeViewModel.cs

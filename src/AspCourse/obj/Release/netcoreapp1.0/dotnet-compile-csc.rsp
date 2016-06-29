@@ -240,6 +240,8 @@
 "C:\Projects\AspCourse\src\AspCourse\Migrations\20160627182224_ChatMigration3.Designer.cs"
 "C:\Projects\AspCourse\src\AspCourse\Migrations\20160627192249_MyChatMigration5.cs"
 "C:\Projects\AspCourse\src\AspCourse\Migrations\20160627192249_MyChatMigration5.Designer.cs"
+"C:\Projects\AspCourse\src\AspCourse\Migrations\20160629103703_MessagePicsMigration.cs"
+"C:\Projects\AspCourse\src\AspCourse\Migrations\20160629103703_MessagePicsMigration.Designer.cs"
 "C:\Projects\AspCourse\src\AspCourse\Migrations\ChatDbContextModelSnapshot.cs"
 "C:\Projects\AspCourse\src\AspCourse\Models\ApplicationRoleManager.cs"
 "C:\Projects\AspCourse\src\AspCourse\Models\ApplicationUser.cs"

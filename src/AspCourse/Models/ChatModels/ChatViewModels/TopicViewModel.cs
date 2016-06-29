@@ -13,6 +13,7 @@ namespace AspCourse.Models.ChatModels.ChatViewModels
 
         public string NewMessageText { get; set; }
         public int NewMessageTopicId { get; set; }
+        public string NewMessagePictureUrl { get; set; }
 
         public string NewTopicTitle { get; set; }
 

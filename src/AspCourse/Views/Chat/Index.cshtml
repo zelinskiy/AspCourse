@@ -9,6 +9,7 @@
             data: {
                 NewMessageText: $('#newTopicText').val(),
                 NewTopicTitle: $('#newTopicTitle').val(),
+                NewMessagePictureUrl: $('#newMessagePictureUrl').val()
             },
             success: function (data) {
                 window.location.reload();
@@ -57,9 +58,10 @@
 <br /><br />
 <p><input class="form-control" placeholder="New Topic Title" type="text" id="newTopicTitle" /></p>
 <p><textarea id="newTopicText" cols="100" rows="10" placeholder="Enter Message text here"></textarea></p>
+<p><input id="newMessagePictureUrl" class="form-control" placeholder="Enter Picture Url text here" /></p>
 <button class="btn btn-default" onclick="sendNewTopic()">New Topic</button>
 <br />
-
+<br />
 
 @{
     foreach (var p in Model.Previews.OrderByDescending(p => p.Item3).OrderByDescending(p => p.Item1.IsSticky))
@@ -117,6 +119,10 @@
                     <img src="@opMessage.Author.AvatarUrl" width="50" />
                     <p>@opMessage.Id - <a href="~/Profile/GetUser/?username=@opMessage.AuthorId">@opMessage.Author.NickName</a> - @opMessage.CreatedAt.ToLocalTime()</p>
                     <p>@opMessage.Text</p>
+                    @if (!string.IsNullOrEmpty(opMessage.PictureUrl))
+                    {
+                        <p><a target="_blank" href="@opMessage.PictureUrl"><img src="@opMessage.PictureUrl" height="300" /></a></p>
+                    }
             }
         </div>
         <div style="margin-left:30px">
@@ -127,6 +133,10 @@
                         <img src="@m.Author.AvatarUrl" width="50" />            
                         <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
                         <p>@m.Text</p>
+                        @if (!string.IsNullOrEmpty(m.PictureUrl))
+                        {
+                            <p><a target="_blank" href="@m.PictureUrl"><img src="@m.PictureUrl" height="300" /></a></p>
+                        }
 
                     </div>
                 }

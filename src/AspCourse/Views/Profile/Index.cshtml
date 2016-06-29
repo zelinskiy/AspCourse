@@ -170,7 +170,7 @@
                 @foreach (var m in pair.Item2)
                 {
                 <div class="well" style="margin-left:30px; background-color:@Model.User.Color">
-                    <p>@m.Id - @Model.User.NickName - @m.CreatedAt</p>
+                    <p><a href="/Chat/Topic/@topic.Id#@m.Id">@m.Id</a> - @Model.User.NickName - @m.CreatedAt</p>
                     <p>@m.Text</p>
                 </div>
                 }

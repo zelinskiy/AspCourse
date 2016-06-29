@@ -20,16 +20,14 @@ namespace AspCourse.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 
             var user = userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
-            if (user != null)
-            {
-                user.LastSeenAt = DateTime.UtcNow;
-                userManager.UpdateAsync(user);
-            }
+            user.LastSeenAt = DateTime.UtcNow;
+            await userManager.UpdateAsync(user);
+
             
 
             

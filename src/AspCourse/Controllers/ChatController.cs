@@ -120,7 +120,8 @@ namespace AspCourse.Controllers
                 Text = model.NewMessageText,
                 TopicId = model.NewMessageTopicId,
                 AuthorId = User.Identity.Name,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                PictureUrl = model.NewMessagePictureUrl
             };
             chatContext.Messages.Add(newMsg);
             chatContext.SaveChanges();
@@ -150,7 +151,8 @@ namespace AspCourse.Controllers
                 Text = model.NewMessageText,
                 TopicId = newTopic.Id,
                 AuthorId = User.Identity.Name,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                PictureUrl = model.NewMessagePictureUrl
             };             
             chatContext.Messages.Add(opMessage);
             newTopic.OpPostId = opMessage.Id;

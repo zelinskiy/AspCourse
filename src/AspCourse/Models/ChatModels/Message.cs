@@ -14,7 +14,9 @@ namespace AspCourse.Models.ChatModels
         public int Id { get; set; }
         
         public int TopicId { get; set; }
-        
+
+        public string PictureUrl { get; set; }
+
         public string Text { get; set; }
         
         public string AuthorId { get; set; }

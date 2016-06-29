@@ -1,4 +1,5 @@
 ﻿@using AspCourse.Models.ChatModels;
+@using System.Text.RegularExpressions;
 @model AspCourse.Models.ChatModels.ChatViewModels.TopicViewModel
 
 
@@ -12,7 +13,8 @@
             url: "/Chat/AddNewMessage",
             data:{
                 NewMessageText: $('#newMessageText').val(),
-                NewMessageTopicId: "@Model.Topic.Id"
+                NewMessageTopicId: "@Model.Topic.Id",
+                NewMessagePictureUrl: $('#newMessagePictureUrl').val()
             },
             success: function (data) {
                 console.log(data);
@@ -32,25 +34,61 @@
         })    
     }
 
+    function replyToMessage(id){
+        $('#newMessageText').val($('#newMessageText').val()+'>>' + id+'\n');     
+    }
+
 
 </script>
 
+<h1>
+    @if (Model.Topic.IsSticky)
+    {
+        <abbr title="Thread is sticky"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></abbr>
+    }
+    @if (Model.Topic.IsClosed)
+    {
+        <abbr title="Thread is closed"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></abbr>
+        
+    }
 
-<br />
-<p><textarea id="newMessageText" style="max-width:30vw;width:30vw; height:150px" placeholder="Enter Message text here"></textarea></p>
-<p><button class="btn btn-default" onclick="sendNewMessage()">Send</button></p>
+    @Model.Topic.Title
+</h1>
 
-<h1>@Model.Topic.Title</h1>
+
 <hr />
 @{
+    var rgx = new Regex("\\>>.*\\d");
+
     if (Model.Messages != null)
     {
-        @foreach (Message m in Model.Messages.OrderByDescending(m => m.CreatedAt))
+        @foreach (Message m in Model.Messages.OrderBy(m => m.CreatedAt))
         {
-            <div class="well" style="width:30vw;background-color:@m.Author.Color">
-                <img src="@m.Author.AvatarUrl" width="50px" />            
-                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@(m.Author.NickName == null ? "Anonymous" : m.Author.NickName)</a> - @m.CreatedAt</p>
-                <p>@m.Text</p>
+            @foreach (Match match in rgx.Matches(m.Text))
+            {
+                var id = match.Value.Substring(2);
+                m.Text = m.Text.Replace(match.Value, $"<a href=\"#{id}\">{match.Value}</a>");
+            }
+
+            <div id="@m.Id" class="well" style="background-color:@m.Author.Color">
+                <img src="@m.Author.AvatarUrl" height="50" />            
+                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime() - <a href="#newMessageText" onclick="replyToMessage(@m.Id)">reply</a></p>
+                
+                
+
+                
+
+                <p>@Html.Raw(m.Text.Replace("\n", " <br />"))</p>
+
+                @if (!string.IsNullOrEmpty(m.PictureUrl))
+                {
+                    <p><a target="_blank" href="@m.PictureUrl"><img src="@m.PictureUrl" height="300" /></a></p>
+                }
+                
+                
+                
+                
+
 
                 @{
                     if (Model.IsModer)
@@ -58,7 +96,6 @@
                         <button onclick="removeMessage(@m.Id)">DELETE</button>
                     }
                 }
-
             </div>
             
         }
@@ -67,6 +104,13 @@
     {
         <h1>No messages found</h1>
     }
+}
+@if (!Model.Topic.IsClosed)
+{
+    <br />
+    <p><textarea id="newMessageText" style="height:150px;width:500px" placeholder="Enter Message text here"></textarea></p>
+    <p><input id="newMessagePictureUrl"  class="form-control" placeholder="Enter Picture Url text here"/></p>
+    <p><button class="btn btn-default" onclick="sendNewMessage()">Send</button></p>
 }
 
 
