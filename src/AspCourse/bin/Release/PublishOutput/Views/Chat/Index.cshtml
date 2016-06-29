@@ -38,7 +38,7 @@
                 console.log(data);
                 window.location.reload();
             }
-        })    
+        })
     }
 
 
@@ -50,7 +50,23 @@
                 console.log(data);
                 window.location.reload();
             }
-        })    
+        })
+    }
+
+    function uploadImage() {
+        var data = new FormData($("#uploadForm")[0]);
+
+        $.ajax({
+            url: '@Url.Action("AddFile", "File")',
+            type: "POST",
+            data: data,
+            contentType: false,
+            dataType: false,
+            processData: false,
+            success: function (result) {
+                $("#newMessagePictureUrl").val("/uploads/"+result);
+            }
+        });
     }
 
 
@@ -59,6 +75,11 @@
 <p><input class="form-control" placeholder="New Topic Title" type="text" id="newTopicTitle" /></p>
 <p><textarea id="newTopicText" cols="100" rows="10" placeholder="Enter Message text here"></textarea></p>
 <p><input id="newMessagePictureUrl" class="form-control" placeholder="Enter Picture Url text here" /></p>
+
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" onchange="uploadImage()" />
+</form>
+
 <button class="btn btn-default" onclick="sendNewTopic()">New Topic</button>
 <br />
 <br />

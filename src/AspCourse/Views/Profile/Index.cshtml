@@ -88,11 +88,28 @@
 
 
 
+    
+
+    function uploadImage() {
+        var data = new FormData($("#uploadForm")[0]);
+
+        $.ajax({
+            url: '@Url.Action("AddFile", "File")',
+            type: "POST",
+            data: data,
+            contentType: false,
+            dataType: false,
+            processData: false,
+            success: function (result) {
+                $("#AvatarUrlPicker").val("/uploads/" + result);
+            }
+        });
+    }
+
+
     $(document).ready(function () {
         isUserModer();
-
     });
-
 
 
 </script>
@@ -150,6 +167,11 @@
     {
         <p>Color: <input type="color" id="ColorPicker" value="@Model.User.Color" /></p>
         <p>Avatar: <input type="text" id="AvatarUrlPicker" value="@Model.User.AvatarUrl" /></p>
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" onchange="uploadImage()" />
+        </form>
+
         <p>NickName: <input type="text" id="NickNamePicker" value="@Model.User.NickName" /></p>
         <p><button onclick="updateUserData()">Update profile</button></p>
     }    

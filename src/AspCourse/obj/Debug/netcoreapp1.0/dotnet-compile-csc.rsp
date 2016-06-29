@@ -221,6 +221,7 @@
 "C:\Projects\AspCourse\src\AspCourse\Startup.cs"
 "C:\Projects\AspCourse\src\AspCourse\Controllers\AccountController.cs"
 "C:\Projects\AspCourse\src\AspCourse\Controllers\ChatController.cs"
+"C:\Projects\AspCourse\src\AspCourse\Controllers\FileController.cs"
 "C:\Projects\AspCourse\src\AspCourse\Controllers\HomeController.cs"
 "C:\Projects\AspCourse\src\AspCourse\Controllers\ManageController.cs"
 "C:\Projects\AspCourse\src\AspCourse\Controllers\ProfileController.cs"

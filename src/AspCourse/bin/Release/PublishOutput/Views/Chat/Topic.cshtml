@@ -39,6 +39,26 @@
     }
 
 
+   
+
+
+    function uploadImage() {
+        var data = new FormData($("#uploadForm")[0]);
+
+        $.ajax({
+            url: '@Url.Action("AddFile", "File")',
+            type: "POST",
+            data: data,
+            contentType: false,
+            dataType: false,
+            processData: false,
+            success: function (result) {
+                $("#newMessagePictureUrl").val("/uploads/"+result);
+            }
+        });
+    }
+
+
 </script>
 
 <h1>
@@ -110,7 +130,13 @@
     <br />
     <p><textarea id="newMessageText" style="height:150px;width:500px" placeholder="Enter Message text here"></textarea></p>
     <p><input id="newMessagePictureUrl"  class="form-control" placeholder="Enter Picture Url text here"/></p>
+
+    <form id="uploadForm"  enctype="multipart/form-data">
+        <input type="file" name="file" onchange="uploadImage()"/>
+    </form>
+
     <p><button class="btn btn-default" onclick="sendNewMessage()">Send</button></p>
+    
 }
 
 
