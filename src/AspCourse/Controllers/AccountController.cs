@@ -18,6 +18,9 @@ namespace AspCourse.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+
+        string[] myRoles = new string[] { "moder", "user" };
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -139,7 +142,18 @@ namespace AspCourse.Controllers
 
                                 
                 var result = await _userManager.CreateAsync(user, model.Password);
-                //await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "user"));
+
+                
+                
+
+                foreach(var r in myRoles)
+                {
+                    if (!await _roleManager.RoleExistsAsync(r))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(r));
+                    }
+                }
+
                 await _userManager.AddToRoleAsync(user, "user");
 
                 if (result.Succeeded)

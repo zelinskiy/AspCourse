@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using AspCourse.Models;
+using AspCourse.Models.ChatModels;
 
 namespace AspCourse.Data
 {
@@ -15,9 +16,14 @@ namespace AspCourse.Data
         {
         }
 
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Topic> Topics { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);

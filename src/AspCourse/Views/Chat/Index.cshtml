@@ -138,7 +138,7 @@
             {
                 <hr />
                     <img src="@opMessage.Author.AvatarUrl" width="50" />
-                    <p>@opMessage.Id - <a href="~/Profile/GetUser/?username=@opMessage.AuthorId">@opMessage.Author.NickName</a> - @opMessage.CreatedAt.ToLocalTime()</p>
+                    <p>@opMessage.Id - <a href="~/Profile/GetUser/?username=@opMessage.AuthorName">@opMessage.Author.NickName</a> - @opMessage.CreatedAt.ToLocalTime()</p>
                     <p>@opMessage.Text</p>
                     @if (!string.IsNullOrEmpty(opMessage.PictureUrl))
                     {
@@ -152,7 +152,7 @@
                 {
                     <div class="well" style="background-color:@m.Author.Color">
                         <img src="@m.Author.AvatarUrl" width="50" />            
-                        <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorId">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
+                        <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorName">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
                         <p>@m.Text</p>
                         @if (!string.IsNullOrEmpty(m.PictureUrl))
                         {

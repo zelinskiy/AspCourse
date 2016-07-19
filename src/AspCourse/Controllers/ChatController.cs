@@ -19,12 +19,12 @@ namespace AspCourse.Controllers
     public class ChatController : Controller
     {
 
-        public ChatDbContext chatContext;
+        public ApplicationDbContext _context;
         UserManager<ApplicationUser> userManager;
 
-        public ChatController(ChatDbContext context, UserManager<ApplicationUser> _userManager)
+        public ChatController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager)
         {
-            chatContext = context;
+            _context = context;
             userManager = _userManager;
         }
 
@@ -36,16 +36,16 @@ namespace AspCourse.Controllers
 
             var previews = new List<Tuple<Topic, List<Message>, DateTime>>();
 
-            foreach(Topic t in chatContext.Topics.ToList())
+            foreach(Topic t in _context.Topics.ToList())
             {
-                var messagesInTopic = chatContext
+                var messagesInTopic = _context
                     .Messages
                     .Where(m => m.TopicId == t.Id)
                     .OrderBy(m=>m.CreatedAt);
 
                 foreach (Message m in messagesInTopic)
                 {
-                    m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorId);
+                    m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorName);
                 }
 
                 previews.Add(new Tuple<Topic, List<Message>, DateTime>(
@@ -69,14 +69,14 @@ namespace AspCourse.Controllers
         [HttpGet]
         public IActionResult Topic(int id)
         {
-            Topic topic = chatContext.Topics.FirstOrDefault(t => t.Id == id);
+            Topic topic = _context.Topics.FirstOrDefault(t => t.Id == id);
 
             if (topic == null) return RedirectToAction("Index");
 
             TopicViewModel model = new TopicViewModel()
             {
                 Topic = topic,
-                Messages = chatContext.Messages
+                Messages = _context.Messages
                     .Where(m=>m.TopicId==topic.Id)
                     .ToList(),
                 IsModer = User.IsInRole("moder"),
@@ -86,7 +86,7 @@ namespace AspCourse.Controllers
 
             foreach(Message m in model.Messages)
             {
-                m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorId);
+                m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorName);
             }
 
             return View(model);
@@ -104,7 +104,7 @@ namespace AspCourse.Controllers
                 return Json("YOU ARE MUTED");
             }
 
-            var topic = chatContext.Topics.First(t => t.Id == model.NewMessageTopicId);
+            var topic = _context.Topics.First(t => t.Id == model.NewMessageTopicId);
             if (topic==null)
             {
                 return Json("TOPIC NOT FOUND");
@@ -119,12 +119,12 @@ namespace AspCourse.Controllers
             {
                 Text = model.NewMessageText,
                 TopicId = model.NewMessageTopicId,
-                AuthorId = User.Identity.Name,
+                AuthorName = User.Identity.Name,
                 CreatedAt = DateTime.UtcNow,
                 PictureUrl = model.NewMessagePictureUrl
             };
-            chatContext.Messages.Add(newMsg);
-            chatContext.SaveChanges();
+            _context.Messages.Add(newMsg);
+            _context.SaveChanges();
 
             return Json("OK");
         }
@@ -143,22 +143,21 @@ namespace AspCourse.Controllers
                 IsClosed = false,
                 IsSticky = false,
             };
-            chatContext.Topics.Add(newTopic);
-            chatContext.SaveChanges();
+            _context.Topics.Add(newTopic);
+            _context.SaveChanges();
 
             Message opMessage = new Message()
             {
                 Text = model.NewMessageText,
                 TopicId = newTopic.Id,
-                AuthorId = User.Identity.Name,
+                AuthorName = User.Identity.Name,
                 CreatedAt = DateTime.UtcNow,
                 PictureUrl = model.NewMessagePictureUrl
             };             
-            chatContext.Messages.Add(opMessage);
-            newTopic.OpPostId = opMessage.Id;
-            chatContext.Update(newTopic);
+            _context.Messages.Add(opMessage);
+            _context.Update(newTopic);
 
-            chatContext.SaveChanges();
+            _context.SaveChanges();
             
 
             return Json($"Topic #{newTopic.Id} added!");
@@ -169,9 +168,9 @@ namespace AspCourse.Controllers
         [Authorize(Roles = "moder")]
         public IActionResult RemoveMessage(int id)
         {
-            var msg = chatContext.Messages.First(m => m.Id == id);
-            chatContext.Messages.Remove(msg);
-            chatContext.SaveChanges();
+            var msg = _context.Messages.First(m => m.Id == id);
+            _context.Messages.Remove(msg);
+            _context.SaveChanges();
             return Json("Message removed");
             
         }
@@ -180,9 +179,9 @@ namespace AspCourse.Controllers
         [Authorize(Roles = "moder")]
         public IActionResult RemoveTopic(int id)
         {
-            var topic = chatContext.Topics.First(t => t.Id == id);
-            chatContext.Topics.Remove(topic);
-            chatContext.SaveChanges();
+            var topic = _context.Topics.First(t => t.Id == id);
+            _context.Topics.Remove(topic);
+            _context.SaveChanges();
             return Json("Topic removed");
                      
         }
@@ -191,10 +190,10 @@ namespace AspCourse.Controllers
         [Authorize(Roles ="moder")]
         public IActionResult ToggleTopicSticky(int id)
         {
-            var topic = chatContext.Topics.First(t => t.Id == id);
+            var topic = _context.Topics.First(t => t.Id == id);
             topic.IsSticky = !topic.IsSticky;
-            chatContext.Topics.Update(topic);
-            chatContext.SaveChanges();
+            _context.Topics.Update(topic);
+            _context.SaveChanges();
             return Json($"Topic sticky: {topic.IsSticky}");            
         }
 
@@ -202,10 +201,10 @@ namespace AspCourse.Controllers
         [Authorize(Roles = "moder")]
         public IActionResult ToggleTopicClosed(int id)
         {
-            var topic = chatContext.Topics.First(t => t.Id == id);
+            var topic = _context.Topics.First(t => t.Id == id);
             topic.IsClosed = !topic.IsClosed;
-            chatContext.Topics.Update(topic);
-            chatContext.SaveChanges();
+            _context.Topics.Update(topic);
+            _context.SaveChanges();
             return Json($"Topic closed: {topic.IsClosed}");
             
         }

@@ -17,31 +17,23 @@ namespace AspCourse.Controllers
     [Authorize]
     public class ProfileController : Controller
     {       
-        public ChatDbContext chatContext;
-        public ApplicationDbContext appContext;
+        public ApplicationDbContext _context;
         UserManager<ApplicationUser> userManager;
         IServiceProvider serviceProvider;
         RoleManager<IdentityRole> roleManager;
 
 
-        public ProfileController(ChatDbContext context,
-            ApplicationDbContext _appContext,
+        public ProfileController(ApplicationDbContext context,
             IServiceProvider _serviceProvider,
             UserManager<ApplicationUser> _userManager)
         {
-            chatContext = context;
-            appContext = _appContext;
+            _context = context;
             userManager = _userManager;
             serviceProvider = _serviceProvider;
             roleManager = (RoleManager<IdentityRole>)serviceProvider.GetService(typeof(ApplicationRoleManager));
-            //SetupRoles();
         }
         
-        private async void SetupRoles()
-        {
-            await roleManager.CreateAsync(new IdentityRole { Name = "user" });
-            await roleManager.CreateAsync(new IdentityRole { Name = "moder" });
-        }
+        
 
 
         [HttpGet]
@@ -52,15 +44,13 @@ namespace AspCourse.Controllers
             model.IsModer = User.IsInRole("moder");
             model.User = userManager.Users.First(u => u.UserName == User.Identity.Name);
             
-            model.UserTopicsMessages = chatContext.Messages
-                .Where(m => m.AuthorId == User.Identity.Name)
+            model.UserTopicsMessages = _context.Messages
+                .Where(m => m.AuthorName == User.Identity.Name)
                 .GroupBy(m => m.TopicId)
                 .Select(g => new Tuple<Topic, List<Message>>(
-                    chatContext.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
+                    _context.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
                     g.ToList()))
                 .ToList();
-            //userManager.AddClaimAsync(model.User, new Claim(ClaimTypes.Role, "moder"));
-            //userManager.AddClaimAsync(model.User, new Claim(ClaimTypes.Role, "user"));
 
             return View(model);
    
@@ -75,11 +65,11 @@ namespace AspCourse.Controllers
             model.IsModer = User.IsInRole("moder");
             model.User = userManager.Users.FirstOrDefault(u => u.UserName==username);
             
-            model.UserTopicsMessages = chatContext.Messages
-                .Where(m => m.AuthorId == username)
+            model.UserTopicsMessages = _context.Messages
+                .Where(m => m.AuthorName == username)
                 .GroupBy(m => m.TopicId)
                 .Select(g => new Tuple<Topic, List<Message>>(
-                    chatContext.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
+                    _context.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
                     g.ToList()))
                 .ToList();
                     
@@ -104,7 +94,7 @@ namespace AspCourse.Controllers
             var model = new AllProfilesViewModel()
             {
                 Users = userManager.Users.ToList(),
-                Messages = chatContext.Messages.ToList()
+                Messages = _context.Messages.ToList()
             };
 
             ViewData["ListTitle"] = "All Users";
@@ -118,7 +108,7 @@ namespace AspCourse.Controllers
             var model = new AllProfilesViewModel()
             {
                 Users = (await userManager.GetUsersInRoleAsync("moder")).ToList(),
-                Messages = chatContext.Messages.ToList()    
+                Messages = _context.Messages.ToList()    
             };
 
             ViewData["ListTitle"] = "Moderators";

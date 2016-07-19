@@ -15,9 +15,8 @@ namespace AspCourse.Models.ChatModels
 
         public string Title { get; set; }
 
-        public int OpPostId { get; set; }
-
         public bool IsSticky { get; set; }
+
         public bool IsClosed { get; set; }
         
     }

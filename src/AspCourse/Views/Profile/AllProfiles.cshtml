@@ -16,9 +16,9 @@
         <p><img src="@user.AvatarUrl" height="100px"/></p>
         <p><a href="/Profile/GetUser/?username=@user.UserName">@user.NickName</a></p>
         <p>@user.UserName - @user.LastSeenAt - @user.RegisteredAt - Muted:@user.IsMuted - Banned:@user.IsBanned</p>
-        <p>Messages: @Model.Messages.Where(m=>m.AuthorId==user.UserName).Count()</p>
+        <p>Messages: @Model.Messages.Where(m=>m.AuthorName==user.UserName).Count()</p>
         
-        var MyMessages = Model.Messages.Where(m => m.AuthorId == user.UserName).OrderBy(m => m.CreatedAt);
+        var MyMessages = Model.Messages.Where(m => m.AuthorName == user.UserName).OrderBy(m => m.CreatedAt);
         if (MyMessages.Count() > 0)
         {
             <p>Last Message: @MyMessages.Last().CreatedAt</p>

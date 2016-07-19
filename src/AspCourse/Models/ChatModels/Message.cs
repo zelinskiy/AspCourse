@@ -14,17 +14,19 @@ namespace AspCourse.Models.ChatModels
         public int Id { get; set; }
         
         public int TopicId { get; set; }
+        
+        public virtual Topic Topic { get; set; }
 
         public string PictureUrl { get; set; }
 
         public string Text { get; set; }
         
-        public string AuthorId { get; set; }
+        public string AuthorName { get; set; }
+        
+        public virtual ApplicationUser Author { get; set; }
         
         public DateTime CreatedAt { get; set; }
         
-        [NotMapped]
-        public ApplicationUser Author { get; set; }
         
     }
 }

@@ -41,13 +41,7 @@ namespace AspCourse
         {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-
-            services.AddDbContext<ChatDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-
+                options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddRoleManager<ApplicationRoleManager>()

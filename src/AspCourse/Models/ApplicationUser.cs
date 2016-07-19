@@ -23,8 +23,7 @@ namespace AspCourse.Models
 
         public DateTime RegisteredAt { get; set; }
         public DateTime LastSeenAt { get; set; }
-        
-
+                   
 
     }
 }
