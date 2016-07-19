@@ -34,21 +34,24 @@ namespace AspCourse.Controllers
         [HttpGet]
          public IActionResult Index()
         {
-
             var previews = new List<Tuple<Topic, List<Message>, DateTime>>();
 
-            foreach(Topic t in _context.Topics.Include(x=>x.Messages).ToList())
+            foreach(Topic t in _context.Topics
+                .Include(x=>x.Messages)                
+                .Include(x=>x.Author)
+                .ToList())
             {
-                var messagesInTopic = t.Messages.ToList();
+                var messagesInTopic = _context.Messages
+                    .Include(m => m.Author)
+                    .Include(m => m.Topic)
+                    .Where(m=>t.Id == m.Topic.Id);
                 
                 previews.Add(new Tuple<Topic, List<Message>, DateTime>(
                     t,
-                    t.Messages.Take(3).ToList(),
-                    t.Messages.Count()>0? t.Messages.Last().CreatedAt:DateTime.MinValue
+                    messagesInTopic.ToList(),
+                    messagesInTopic.Count()>0? t.Messages.Last().CreatedAt:DateTime.MinValue
                     ));
             }
-
-            
 
             IndexViewModel model = new IndexViewModel()
             {
@@ -58,6 +61,8 @@ namespace AspCourse.Controllers
 
             return View(model);
         }
+
+
 
         [HttpGet]
         public IActionResult Topic(int id)
@@ -69,18 +74,10 @@ namespace AspCourse.Controllers
             TopicViewModel model = new TopicViewModel()
             {
                 Topic = topic,
-                Messages = _context.Messages
-                    .Where(m=>m.Topic.Id==topic.Id)
-                    .ToList(),
+                Messages = _context.Messages.Include(m=>m.Author).Where(m=>m.Topic.Id == topic.Id).ToList(),
                 IsModer = User.IsInRole("moder"),
             };
-
-
-
-            foreach(Message m in model.Messages)
-            {
-                m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.Author.UserName);
-            }
+                        
 
             return View(model);
         }
@@ -122,7 +119,8 @@ namespace AspCourse.Controllers
                 Text = model.NewMessageText,
                 Author = _context.Users.First(u => u.UserName == User.Identity.Name),
                 CreatedAt = DateTime.UtcNow,
-                PictureUrl = model.NewMessagePictureUrl
+                PictureUrl = model.NewMessagePictureUrl,
+                Topic = topic
             };
             _context.Messages.Add(newMsg);
             _context.SaveChanges();
@@ -133,7 +131,8 @@ namespace AspCourse.Controllers
         [HttpPost]
         public IActionResult AddNewTopic(TopicViewModel model)
         {
-            if(userManager.Users.First(u => u.UserName == User.Identity.Name).IsMuted)
+            var user = userManager.Users.First(u => u.UserName == User.Identity.Name);
+            if (user.IsMuted)
             {
                 return Json("YOU ARE MUTED");
             }
@@ -141,6 +140,7 @@ namespace AspCourse.Controllers
             Topic newTopic = new Topic()
             {
                 Title = model.NewTopicTitle,
+                Author = user, 
                 IsClosed = false,
                 IsSticky = false,
             };
@@ -151,12 +151,15 @@ namespace AspCourse.Controllers
             {
                 Text = model.NewMessageText,
                 CreatedAt = DateTime.UtcNow,
+                Author = user,
+                Topic = _context.Topics.First(t => t.Id == newTopic.Id),
                 PictureUrl = model.NewMessagePictureUrl
-            };             
-            _context.Messages.Add(opMessage);
-            _context.Update(newTopic);
+            };
 
+            
+            _context.Messages.Add(opMessage);            
             _context.SaveChanges();
+            
             
 
             return Json($"Topic #{newTopic.Id} added!");

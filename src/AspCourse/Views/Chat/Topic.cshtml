@@ -95,7 +95,7 @@
 
             <div id="@m.Id" class="well" style="background-color:@m.Author.Color">
                 <img src="@m.Author.AvatarUrl" height="50" />            
-                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.AuthorName">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime() - <a href="#newMessageText" onclick="replyToMessage(@m.Id)">reply</a></p>
+                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.Author.Id">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime() - <a href="#newMessageText" onclick="replyToMessage(@m.Id)">reply</a></p>
                 
                 
 

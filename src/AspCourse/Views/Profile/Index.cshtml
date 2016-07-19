@@ -135,7 +135,7 @@
 }
 
 @{
-    if (Model.IsModer)
+    if (Model.IsModer || true)
     {
         if (Model.User.IsBanned)
         {
@@ -192,14 +192,13 @@
 <h2>Messages:</h2>
 @{
 
-    foreach (var pair in Model.UserTopicsMessages)
+    foreach (var topic in Model.UserTopics)
     {
-        var topic = pair.Item1;
         if (topic != null)
         {
             <div class="well" >
                 <h3><a href="~/Chat/Topic/@topic.Id">@topic.Title</a>:</h3>
-                @foreach (var m in pair.Item2)
+                @foreach (var m in topic.Messages)
                 {
                 <div class="well" style="margin-left:30px; background-color:@Model.User.Color">
                     <p><a href="/Chat/Topic/@topic.Id#@m.Id">@m.Id</a> - @Model.User.NickName - @m.CreatedAt</p>

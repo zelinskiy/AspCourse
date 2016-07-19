@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Security.Claims;
 using AspCourse.Models.ChatModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspCourse.Controllers
 {
@@ -25,12 +26,15 @@ namespace AspCourse.Controllers
 
         public ProfileController(ApplicationDbContext context,
             IServiceProvider _serviceProvider,
-            UserManager<ApplicationUser> _userManager)
+            UserManager<ApplicationUser> _userManager,
+            RoleManager<IdentityRole> _roleManager
+            )
         {
             _context = context;
             userManager = _userManager;
             serviceProvider = _serviceProvider;
-            roleManager = (RoleManager<IdentityRole>)serviceProvider.GetService(typeof(ApplicationRoleManager));
+            roleManager = _roleManager;
+                        
         }
         
         
@@ -39,51 +43,27 @@ namespace AspCourse.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-
-            var model = new ProfileViewModel();
-            model.IsMyself = true;
-            model.IsModer = User.IsInRole("moder");
-            model.User = userManager.Users.First(u => u.UserName == User.Identity.Name);
-            
-            model.UserTopicsMessages = _context.Messages
-                .Where(m => m.Author.UserName == User.Identity.Name)
-                .GroupBy(m => m.Topic.Id)
-                .Select(g => new Tuple<Topic, List<Message>>(
-                    _context.Topics.FirstOrDefault(t => t.Id == g.First().Topic.Id),
-                    g.ToList()))
-                .ToList();
-
-            return View(model);
-   
+            return GetUser(User.Identity.Name);   
         }
 
         [HttpGet]
         public IActionResult GetUser(string username)
-        {
+        {           
 
-            var model = new ProfileViewModel();
-            model.IsMyself = false;
-            model.IsModer = User.IsInRole("moder");
-            model.User = userManager.Users.FirstOrDefault(u => u.UserName==username);
+            var user = userManager.Users.FirstOrDefault(u => u.UserName == username);
+            if (user == null) return View("~/Views/Shared/Error.cshtml");
             
-            model.UserTopicsMessages = _context.Messages
-                .Where(m => m.Author.UserName == username)
-                .GroupBy(m => m.Topic.Id)
-                .Select(g => new Tuple<Topic, List<Message>>(
-                    _context.Topics.FirstOrDefault(t => t.Id == g.First().Topic.Id),
-                    g.ToList()))
+            var model = new ProfileViewModel();
+            model.IsMyself = username == User.Identity.Name;
+            model.IsModer = User.IsInRole("moder");
+            model.User = user;
+            
+            model.UserTopics = _context.Topics
+                .Include(t => t.Messages)
+                .Where(t=>t.Author.Id==user.Id)
                 .ToList();
                     
-
-            if (model.User.UserName == User.Identity.Name)
-            {
-                return RedirectToAction("Index");
-            }
-
-            if(model.User == null)
-            {
-                return View("~/Views/Shared/Error.cshtml");
-            }
+           
 
             return View("~/Views/Profile/Index.cshtml", model);
 
@@ -136,6 +116,7 @@ namespace AspCourse.Controllers
         }
         
         [HttpPost]
+        [Authorize(Roles = "moder")]
         async public Task<IActionResult> Mute(string username, int time)
         {
             var user = userManager.Users.First(u => u.UserName == username);
@@ -153,47 +134,41 @@ namespace AspCourse.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "moder")]
         async public Task<IActionResult> Ban(string username, int time)
         {
             var user = userManager.Users.First(u => u.UserName == username);
-
-            if (User.IsInRole("moder"))
-            {
-                user.IsBanned = true;
-                user.BannedUntil = DateTime.Now.AddMinutes(time);
-                await userManager.UpdateAsync(user);
-            }
-
+            user.IsBanned = true;
+            user.BannedUntil = DateTime.Now.AddMinutes(time);
+            await userManager.UpdateAsync(user);        
             return Json("Banned");
 
         }
 
         [HttpPost]
+        [Authorize(Roles = "moder")]
         async public Task<IActionResult> UnMute(string username)
         {
             var user = userManager.Users.First(u => u.UserName == username);
 
-            if (User.IsInRole("moder"))
-            {
-                user.IsMuted = false;
-                await userManager.UpdateAsync(user);
-            }
+            
+            user.IsMuted = false;
+            await userManager.UpdateAsync(user);
+            
 
             return Json("UnMuted");
 
         }
 
         [HttpPost]
+        [Authorize(Roles ="moder")]
         async public Task<IActionResult> UnBan(string username)
         {
             var user = userManager.Users.First(u => u.UserName == username);
-
-            if (User.IsInRole("moder"))
-            {
-                user.IsBanned = false;
-                await userManager.UpdateAsync(user);
-            }
-
+                        
+            user.IsBanned = false;
+            await userManager.UpdateAsync(user);
+            
             return Json("UnBanned");
 
         }
@@ -207,27 +182,21 @@ namespace AspCourse.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "moder")]
         async public Task<IActionResult> ToggleModer(string username)
-        {
-            if (User.IsInRole("moder"))
+        {            
+            var user = userManager.Users.First(u => u.UserName == username);
+            bool isModer = await userManager.IsInRoleAsync(user, "moder");
+            if (isModer)
             {
-                var user = userManager.Users.First(u => u.UserName == username);
-                bool isModer = await userManager.IsInRoleAsync(user, "moder");
-                if (isModer)
-                {
-                    await userManager.RemoveFromRoleAsync(user, "moder");
-                }
-                else
-                {
-                    await userManager.AddToRoleAsync(user, "moder");
-                }
-
-                return Json("Swithed to:"+(await userManager.IsInRoleAsync(user, "moder")));
+                await userManager.RemoveFromRoleAsync(user, "moder");
             }
             else
             {
-                return Json("Operation not permitted");
+                await userManager.AddToRoleAsync(user, "moder");
             }
+
+            return Json("Swithed to:"+(await userManager.IsInRoleAsync(user, "moder")));            
             
         }
 
