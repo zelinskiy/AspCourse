@@ -46,10 +46,10 @@ namespace AspCourse.Controllers
             model.User = userManager.Users.First(u => u.UserName == User.Identity.Name);
             
             model.UserTopicsMessages = _context.Messages
-                .Where(m => m.AuthorName == User.Identity.Name)
-                .GroupBy(m => m.TopicId)
+                .Where(m => m.Author.UserName == User.Identity.Name)
+                .GroupBy(m => m.Topic.Id)
                 .Select(g => new Tuple<Topic, List<Message>>(
-                    _context.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
+                    _context.Topics.FirstOrDefault(t => t.Id == g.First().Topic.Id),
                     g.ToList()))
                 .ToList();
 
@@ -67,10 +67,10 @@ namespace AspCourse.Controllers
             model.User = userManager.Users.FirstOrDefault(u => u.UserName==username);
             
             model.UserTopicsMessages = _context.Messages
-                .Where(m => m.AuthorName == username)
-                .GroupBy(m => m.TopicId)
+                .Where(m => m.Author.UserName == username)
+                .GroupBy(m => m.Topic.Id)
                 .Select(g => new Tuple<Topic, List<Message>>(
-                    _context.Topics.FirstOrDefault(t => t.Id == g.First().TopicId),
+                    _context.Topics.FirstOrDefault(t => t.Id == g.First().Topic.Id),
                     g.ToList()))
                 .ToList();
                     

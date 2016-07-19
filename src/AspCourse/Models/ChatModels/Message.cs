@@ -13,17 +13,18 @@ namespace AspCourse.Models.ChatModels
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         
-        public int TopicId { get; set; }
-        
+
+        [Required]
         public virtual Topic Topic { get; set; }
+
+        [Required]
+        public virtual ApplicationUser Author { get; set; }
+
 
         public string PictureUrl { get; set; }
 
-        public string Text { get; set; }
-        
-        public string AuthorName { get; set; }
-        
-        public virtual ApplicationUser Author { get; set; }
+        [Required]
+        public string Text { get; set; }      
         
         public DateTime CreatedAt { get; set; }
         

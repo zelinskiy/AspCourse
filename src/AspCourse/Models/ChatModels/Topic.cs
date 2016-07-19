@@ -13,6 +13,11 @@ namespace AspCourse.Models.ChatModels
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public List<Message> Messages { get; set; }
+
+        public virtual List<Subscription> Subscriptions { get; set; }
+
+        [Required]
         public string Title { get; set; }
 
         public bool IsSticky { get; set; }

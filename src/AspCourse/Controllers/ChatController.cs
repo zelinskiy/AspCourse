@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using AspCourse.Models;
 using AspCourse.Data;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspCourse.Controllers
 {
@@ -40,13 +41,15 @@ namespace AspCourse.Controllers
             {
                 var messagesInTopic = _context
                     .Messages
-                    .Where(m => m.TopicId == t.Id)
+                    .Where(m => m.Topic.Id == t.Id)
                     .OrderBy(m=>m.CreatedAt);
 
+                /*
                 foreach (Message m in messagesInTopic)
                 {
                     m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorName);
                 }
+                */
 
                 previews.Add(new Tuple<Topic, List<Message>, DateTime>(
                     t,
@@ -77,7 +80,7 @@ namespace AspCourse.Controllers
             {
                 Topic = topic,
                 Messages = _context.Messages
-                    .Where(m=>m.TopicId==topic.Id)
+                    .Where(m=>m.Topic.Id==topic.Id)
                     .ToList(),
                 IsModer = User.IsInRole("moder"),
             };
@@ -86,7 +89,7 @@ namespace AspCourse.Controllers
 
             foreach(Message m in model.Messages)
             {
-                m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorName);
+                m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.Author.UserName);
             }
 
             return View(model);
@@ -127,8 +130,7 @@ namespace AspCourse.Controllers
             Message newMsg = new Message()
             {
                 Text = model.NewMessageText,
-                TopicId = model.NewMessageTopicId,
-                AuthorName = User.Identity.Name,
+                Author = _context.Users.First(u => u.UserName == User.Identity.Name),
                 CreatedAt = DateTime.UtcNow,
                 PictureUrl = model.NewMessagePictureUrl
             };
@@ -158,8 +160,6 @@ namespace AspCourse.Controllers
             Message opMessage = new Message()
             {
                 Text = model.NewMessageText,
-                TopicId = newTopic.Id,
-                AuthorName = User.Identity.Name,
                 CreatedAt = DateTime.UtcNow,
                 PictureUrl = model.NewMessagePictureUrl
             };             

@@ -18,6 +18,7 @@ namespace AspCourse.Data
 
         public DbSet<Message> Messages { get; set; }
         public DbSet<Topic> Topics { get; set; }
+        public DbSet<Like> Likes { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

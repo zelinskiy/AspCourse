@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using AspCourse.Models.ChatModels;
+
 namespace AspCourse.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
@@ -24,6 +26,10 @@ namespace AspCourse.Models
         public DateTime RegisteredAt { get; set; }
         public DateTime LastSeenAt { get; set; }
                    
+
+        public virtual List<Subscription> Subscriptions { get; set; }
+
+        public virtual List<Message> Messages { get; set; }
 
     }
 }

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using AspCourse.Data;
 
-namespace AspCourse.Data.Migrations
+namespace AspCourse.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160719130903_Migration1")]
-    partial class Migration1
+    [Migration("20160719162312_Migration0")]
+    partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,20 +83,39 @@ namespace AspCourse.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("AspCourse.Models.ChatModels.Like", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("MessageId");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("AspCourse.Models.ChatModels.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("AuthorId");
+                    b.Property<string>("AuthorId")
+                        .IsRequired();
 
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("PictureUrl");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .IsRequired();
 
-                    b.Property<int>("TopicId");
+                    b.Property<int?>("TopicId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -112,11 +131,17 @@ namespace AspCourse.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("TopicId");
+                    b.Property<int?>("TopicId")
+                        .IsRequired();
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TopicId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Subscriptions");
                 });
@@ -130,7 +155,8 @@ namespace AspCourse.Data.Migrations
 
                     b.Property<bool>("IsSticky");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -244,15 +270,36 @@ namespace AspCourse.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("AspCourse.Models.ChatModels.Like", b =>
+                {
+                    b.HasOne("AspCourse.Models.ChatModels.Message")
+                        .WithMany()
+                        .HasForeignKey("MessageId");
+                });
+
             modelBuilder.Entity("AspCourse.Models.ChatModels.Message", b =>
                 {
                     b.HasOne("AspCourse.Models.ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("AspCourse.Models.ChatModels.Topic")
                         .WithMany()
                         .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("AspCourse.Models.ChatModels.Subscription", b =>
+                {
+                    b.HasOne("AspCourse.Models.ChatModels.Topic")
+                        .WithMany()
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("AspCourse.Models.ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
