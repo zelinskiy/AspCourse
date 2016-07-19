@@ -97,11 +97,20 @@ namespace AspCourse.Controllers
 
 
         [HttpPost]
-        public IActionResult AddNewMessage(TopicViewModel model)
+        public async Task<IActionResult> AddNewMessage(TopicViewModel model)
         {
-            if (userManager.Users.First(u => u.UserName == User.Identity.Name).IsMuted)
+            var user = userManager.Users.First(u => u.UserName == User.Identity.Name);
+            if (user.IsMuted)
             {
-                return Json("YOU ARE MUTED");
+                if (user.MutedUntil.ToUniversalTime() < DateTime.UtcNow)
+                {
+                    user.IsMuted = false;
+                    await userManager.UpdateAsync(user);
+                }
+                else
+                {
+                    return Json("YOU ARE MUTED");
+                }                
             }
 
             var topic = _context.Topics.First(t => t.Id == model.NewMessageTopicId);

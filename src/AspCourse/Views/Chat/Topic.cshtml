@@ -18,8 +18,11 @@
             },
             success: function (data) {
                 console.log(data);
+                if (data == "YOU ARE MUTED") {
+                    alert("You are muted!");
+                }
                 window.location.reload();
-            }
+            },            
         });
     }
 

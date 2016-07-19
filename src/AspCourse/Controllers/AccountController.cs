@@ -79,10 +79,26 @@ namespace AspCourse.Controllers
 
                     
                     var user = await _userManager.FindByEmailAsync(model.Email);
-                    
+                    user.LastSeenAt = DateTime.UtcNow;
+                    await _userManager.UpdateAsync(user);
+
+                    if (user.MutedUntil.ToUniversalTime() < DateTime.UtcNow)
+                    {
+                        user.IsMuted = false;
+                        await _userManager.UpdateAsync(user);
+                    }
+                                        
                     if (user.IsBanned)
                     {
-                        await _signInManager.SignOutAsync();
+                        if (user.BannedUntil.ToUniversalTime() < DateTime.UtcNow)
+                        {
+                            user.IsBanned = false;
+                            await _userManager.UpdateAsync(user);
+                        }
+                        else
+                        {
+                            await _signInManager.SignOutAsync();
+                        }                        
                         return RedirectToAction("Banned", "Home");
                     }
                     else

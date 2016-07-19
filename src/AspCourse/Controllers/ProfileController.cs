@@ -39,6 +39,7 @@ namespace AspCourse.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
             var model = new ProfileViewModel();
             model.IsMyself = true;
             model.IsModer = User.IsInRole("moder");
@@ -108,9 +109,10 @@ namespace AspCourse.Controllers
             var model = new AllProfilesViewModel()
             {
                 Users = (await userManager.GetUsersInRoleAsync("moder")).ToList(),
-                Messages = _context.Messages.ToList()    
+                Messages = _context.Messages.ToList()
             };
 
+            
             ViewData["ListTitle"] = "Moderators";
             return View("~/Views/Profile/AllProfiles.cshtml", model);
 

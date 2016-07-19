@@ -20,19 +20,25 @@
     }
 
 
-    function banUser(time) {
+    function banUser() {      
         $.post({
-            url: "/Profile/Ban/?username=@Model.User.UserName&time=" + time,
+            url: "/Profile/Ban/?username=@Model.User.UserName&time=" + getDeltaTime(),
             success: function (data) {
-                console.log(data);
+                console.log(data);                
                 window.location.reload();
             }
         });
     }
 
-    function muteUser(time) {
+    function getDeltaTime() {
+        var until = new Date($("#dateTimePicker").val());
+        var deltatime = Math.floor((until - new Date()) / 60000 + until.getTimezoneOffset());
+        return deltatime;
+    }
+
+    function muteUser() {
         $.post({
-            url: "/Profile/Mute/?username=@Model.User.UserName&time=" + time,
+            url: "/Profile/Mute/?username=@Model.User.UserName&time=" + getDeltaTime(),
             success: function (data) {
                 console.log(data);
                 window.location.reload();
@@ -112,6 +118,7 @@
     });
 
 
+
 </script>
 
 @{ 
@@ -129,14 +136,14 @@
 
 @{
     if (Model.IsModer)
-    {       
+    {
         if (Model.User.IsBanned)
         {
             <button onclick="unBanUser()">UNBAN</button>
         }
         else
         {
-            <button onclick="banUser(10)">BAN 10 MINUTES</button>
+            <button onclick="banUser()">BAN</button>
         }
         if (Model.User.IsMuted)
         {
@@ -144,10 +151,13 @@
         }
         else
         {
-            <button onclick="muteUser(10)">MUTE 10 MINUTES</button>
+            <button onclick="muteUser()">MUTE</button>
         }
 
         <button id="toggleModerButton" onclick="toggleUserModer()">MODER</button>
+
+        <input type="datetime-local" value="" id="dateTimePicker"/>
+        <button onclick="f()">!!!</button>
     }
 }
 <hr />
