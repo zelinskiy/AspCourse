@@ -37,24 +37,14 @@ namespace AspCourse.Controllers
 
             var previews = new List<Tuple<Topic, List<Message>, DateTime>>();
 
-            foreach(Topic t in _context.Topics.ToList())
+            foreach(Topic t in _context.Topics.Include(x=>x.Messages).ToList())
             {
-                var messagesInTopic = _context
-                    .Messages
-                    .Where(m => m.Topic.Id == t.Id)
-                    .OrderBy(m=>m.CreatedAt);
-
-                /*
-                foreach (Message m in messagesInTopic)
-                {
-                    m.Author = userManager.Users.FirstOrDefault(u => u.UserName == m.AuthorName);
-                }
-                */
-
+                var messagesInTopic = t.Messages.ToList();
+                
                 previews.Add(new Tuple<Topic, List<Message>, DateTime>(
                     t,
-                    messagesInTopic.Take(3).ToList(),
-                    messagesInTopic.Count()>0?messagesInTopic.Last().CreatedAt:DateTime.MinValue
+                    t.Messages.Take(3).ToList(),
+                    t.Messages.Count()>0? t.Messages.Last().CreatedAt:DateTime.MinValue
                     ));
             }
 

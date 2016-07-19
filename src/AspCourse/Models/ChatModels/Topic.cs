@@ -15,6 +15,9 @@ namespace AspCourse.Models.ChatModels
 
         public List<Message> Messages { get; set; }
 
+        
+        public ApplicationUser Author { get; set; }
+
         public virtual List<Subscription> Subscriptions { get; set; }
 
         [Required]
