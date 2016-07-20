@@ -2,75 +2,10 @@
 @using AspCourse.Models.ChatModels.ChatViewModels;
 @model AspCourse.Models.ChatModels.ChatViewModels.IndexViewModel
 
-<script>
+@section Scripts {
+    <script src="~/js/ChatScripts.js"></script>
+}
 
-    function sendNewTopic() {
-        $.post({
-            url: "/Chat/AddNewTopic",
-            data: {
-                NewMessageText: $('#newTopicText').val(),
-                NewTopicTitle: $('#newTopicTitle').val(),
-                NewMessagePictureUrl: $('#newMessagePictureUrl').val()
-            },
-            success: function (data) {
-                window.location.reload();
-                console.log(data);
-            }
-        });
-    }
-
-    function removeTopic(id) {
-        $.post({
-            url: "/Chat/RemoveTopic/?id=" + id,
-            success: function (data) {
-                console.log(data);
-                window.location.reload();
-            }
-        })
-    }
-
-
-    function toggleTopicSticked(id){
-        $.post({
-            url: "/Chat/ToggleTopicSticky/?id=" + id,
-            type:"POST",
-            success: function (data) {
-                console.log(data);
-                window.location.reload();
-            }
-        })
-    }
-
-
-    function toggleTopicClosed(id){
-        $.post({
-            url: "/Chat/ToggleTopicClosed/?id=" + id,
-            type:"POST",
-            success: function (data) {
-                console.log(data);
-                window.location.reload();
-            }
-        })
-    }
-
-    function uploadImage() {
-        var data = new FormData($("#uploadForm")[0]);
-
-        $.ajax({
-            url: '@Url.Action("AddFile", "File")',
-            type: "POST",
-            data: data,
-            contentType: false,
-            dataType: false,
-            processData: false,
-            success: function (result) {
-                $("#newMessagePictureUrl").val("/uploads/"+result);
-            }
-        });
-    }
-
-
-</script>
 <br /><br />
 <center>
     <p><input class="form-control" placeholder="New Topic Title" type="text" id="newTopicTitle" /></p>

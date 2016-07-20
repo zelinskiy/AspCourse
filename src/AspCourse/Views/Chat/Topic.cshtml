@@ -3,66 +3,9 @@
 @using System.Text.RegularExpressions;
 @model TopicViewModel
 
-
-<script>
-
-    
-
-
-    function sendNewMessage() {
-        $.post({
-            url: "/Chat/AddNewMessage",
-            data:{
-                NewMessageText: $('#newMessageText').val(),
-                NewMessageTopicId: "@Model.Topic.Id",
-                NewMessagePictureUrl: $('#newMessagePictureUrl').val()
-            },
-            success: function (data) {
-                console.log(data);
-                if (data == "YOU ARE MUTED") {
-                    alert("You are muted!");
-                }
-                window.location.reload();
-            },            
-        });
-    }
-
-    function removeMessage(id){
-        $.post({
-            url: "/Chat/RemoveMessage/?id=" + id,
-            success:function(data){
-                console.log(data);   
-                window.location.reload();
-            }
-        })    
-    }
-
-    function replyToMessage(id){
-        $('#newMessageText').val($('#newMessageText').val()+'>>' + id+'\n');     
-    }
-
-
-   
-
-
-    function uploadImage() {
-        var data = new FormData($("#uploadForm")[0]);
-
-        $.ajax({
-            url: '@Url.Action("AddFile", "File")',
-            type: "POST",
-            data: data,
-            contentType: false,
-            dataType: false,
-            processData: false,
-            success: function (result) {
-                $("#newMessagePictureUrl").val("/uploads/"+result);
-            }
-        });
-    }
-
-
-</script>
+@section Scripts {
+    <script src="~/js/ChatScripts.js"></script>
+}
 
 <h1>
     @if (Model.Topic.IsSticky)
@@ -97,7 +40,7 @@
         <input type="file" name="file" onchange="uploadImage()"/>
     </form>
 
-    <p><button class="btn btn-default" onclick="sendNewMessage()">Send</button></p>
+    <p><button class="btn btn-default" onclick="sendNewMessage(@Model.Topic.Id)">Send</button></p>
     
 }
 
