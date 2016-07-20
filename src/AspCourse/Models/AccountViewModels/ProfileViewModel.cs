@@ -10,7 +10,7 @@ namespace AspCourse.Models.AccountViewModels
     {
 
         public ApplicationUser User { get; set; }
-        public List<Topic> UserTopics { get; set; }
+        public List<Message> UserMessages { get; set; }
 
         public bool IsMyself { get; set; }
         public bool IsModer { get; set; }

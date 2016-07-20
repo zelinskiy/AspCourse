@@ -88,7 +88,7 @@
 
 
             <div style="margin-left:150px">
-                @Html.Partial("MessagesListPartial", new MessagesListPartialViewModel()
+           @Html.Partial("MessagesListPartial", new MessagesListPartialViewModel()
            {
                Messages = p.Item2.Take(3).ToList(),
                IsModer = Model.IsModer,

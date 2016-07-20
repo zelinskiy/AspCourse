@@ -162,7 +162,7 @@
 }
 <hr />
 
-<img src="@Model.User.AvatarUrl" width="100px"/>
+<img src="@Model.User.AvatarUrl" width="300px"/>
 <hr />
 <p>Id: @Model.User.Id</p>
 <p>NickName: @Model.User.NickName</p>
@@ -184,32 +184,41 @@
 
         <p>NickName: <input type="text" id="NickNamePicker" value="@Model.User.NickName" /></p>
         <p><button onclick="updateUserData()">Update profile</button></p>
-    }    
+    }
 }
 
 <hr />
+@if (Model.IsMyself)
+{
+    <a href="/Profile/MySubscriptions">Subscriptions</a>
+    <a href="/Profile/MyLikes">Liked</a>
+    <a href="/Profile/MyDislikes">Disliked</a>
+    <a href="/Profile/MyStars">Starred</a>
+}
 
-<h2>Messages:</h2>
-@{
-
-    foreach (var topic in Model.UserTopics)
+<h2>@ViewData["MessageListTitle"]</h2>
+@{    
+    foreach (var msg in Model.UserMessages.OrderByDescending(m=>m.CreatedAt))
     {
-        if (topic != null)
-        {
-            <div class="well" >
-                <h3><a href="~/Chat/Topic/@topic.Id">@topic.Title</a>:</h3>
-                @foreach (var m in topic.Messages)
-                {
-                <div class="well" style="margin-left:30px; background-color:@Model.User.Color">
-                    <p><a href="/Chat/Topic/@topic.Id#@m.Id">@m.Id</a> - @Model.User.NickName - @m.CreatedAt</p>
-                    <p>@m.Text</p>
-                </div>
-                }
-            </div>
-
-        }
 
 
+        <div id="@msg.Id" class="well" style="background-color:@msg.Author.Color">
+            <img src="@msg.Author.AvatarUrl" height="50" />
+            <p>
+                At topic <a href="/Chat/Topic/@msg.Topic.Id">@msg.Topic.Title</a>:
+                <br />
+                <a href="~/Profile/GetUser/?username=@msg.Author.Id">@msg.Author.NickName</a> 
+                write at <a href="/Chat/Topic/@msg.Topic.Id#@msg.Id">@msg.CreatedAt.ToLocalTime()</a>
+            </p>
+
+            <p>@Html.Raw(msg.Text.Replace("\n", " <br />"))</p>
+
+            @if (!string.IsNullOrEmpty(msg.PictureUrl))
+            {
+                <p><a target="_blank" href="@msg.PictureUrl"><img src="@msg.PictureUrl" height="300" /></a></p>
+            }
+
+        </div>
     }
 }
 

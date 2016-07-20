@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 using Microsoft.EntityFrameworkCore;
+using AspCourse.Models.ChatModels.ChatViewModels;
 
 namespace AspCourse.Controllers
 {
@@ -50,15 +51,105 @@ namespace AspCourse.Controllers
             model.IsModer = User.IsInRole("moder");
             model.User = user;
             
-            model.UserTopics = _context.Topics
-                .Include(t => t.Messages)
-                .Where(t=>t.Author.Id==user.Id)
+            model.UserMessages = _context.Messages
+                .Include(m=>m.Author)
+                .Include(m=>m.Topic)
+                .Where(m=>m.Author.Id == user.Id)
                 .ToList();
-                    
-           
 
+
+            ViewData["MessageListTitle"] = "Messages";
             return View("~/Views/Profile/Index.cshtml", model);
 
+        }
+
+        
+        [HttpGet]
+        public IActionResult MySubscriptions()
+        {        
+            var user = userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null) return View("~/Views/Shared/Error.cshtml");
+
+            var model = new ProfileViewModel();
+            model.IsMyself = true;
+            model.IsModer = User.IsInRole("moder");
+            model.User = user;
+
+            model.UserMessages = _context.Messages
+                .Include(m=>m.Topic)
+                .Include(m => m.Author)
+                .Include(m => m.Likes)
+                .Where(m => m.Topic.Likes.Any(l => l.User.Id == user.Id && l.Type == "Subscription"))
+                .ToList();
+
+            ViewData["MessageListTitle"] = "Subscriptions";
+            return View("~/Views/Profile/Index.cshtml", model);
+        }
+
+        [HttpGet]
+        public IActionResult MyLikes()
+        {
+            var user = userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null) return View("~/Views/Shared/Error.cshtml");
+
+            var model = new ProfileViewModel();
+            model.IsMyself = true;
+            model.IsModer = User.IsInRole("moder");
+            model.User = user;
+
+            model.UserMessages = _context.Messages
+                .Include(m => m.Topic)
+                .Include(m => m.Author)
+                .Include(m => m.Likes)
+                .Where(m => m.Likes.Any(l => l.User.Id == user.Id && l.Type == "Like"))
+                .ToList();
+
+            ViewData["MessageListTitle"] = "Liked";
+            return View("~/Views/Profile/Index.cshtml", model);
+        }
+
+        [HttpGet]
+        public IActionResult MyDislikes()
+        {
+            var user = userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null) return View("~/Views/Shared/Error.cshtml");
+
+            var model = new ProfileViewModel();
+            model.IsMyself = true;
+            model.IsModer = User.IsInRole("moder");
+            model.User = user;
+
+            model.UserMessages = _context.Messages
+                .Include(m => m.Topic)
+                .Include(m => m.Author)
+                .Include(m => m.Likes)
+                .Where(m => m.Likes.Any(l => l.User.Id == user.Id && l.Type == "Dislike"))
+                .ToList();
+
+            ViewData["MessageListTitle"] = "Disliked";
+            return View("~/Views/Profile/Index.cshtml", model);
+        }
+
+        [HttpGet]
+        public IActionResult MyStars()
+        {
+            var user = userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null) return View("~/Views/Shared/Error.cshtml");
+
+            var model = new ProfileViewModel();
+            model.IsMyself = true;
+            model.IsModer = User.IsInRole("moder");
+            model.User = user;
+
+            model.UserMessages = _context.Messages
+                .Include(m => m.Topic)
+                .Include(m => m.Author)
+                .Include(m => m.Likes)
+                .Where(m => m.Likes.Any(l => l.User.Id == user.Id && l.Type == "Star"))
+                .ToList();
+
+            ViewData["MessageListTitle"] = "Starred";
+            return View("~/Views/Profile/Index.cshtml", model);
         }
 
         [HttpGet]
