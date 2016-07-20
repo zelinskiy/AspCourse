@@ -1,6 +1,7 @@
 ﻿@using AspCourse.Models.ChatModels;
+@using AspCourse.Models.ChatModels.ChatViewModels;
 @using System.Text.RegularExpressions;
-@model AspCourse.Models.ChatModels.ChatViewModels.TopicViewModel
+@model TopicViewModel
 
 
 <script>
@@ -79,54 +80,13 @@
 
 
 <hr />
-@{
-    var rgx = new Regex("\\>>.*\\d");
 
-    if (Model.Messages != null)
+@Html.Partial("MessagesListPartial", new MessagesListPartialViewModel()
     {
-        @foreach (Message m in Model.Messages.OrderBy(m => m.CreatedAt))
-        {
-            @foreach (Match match in rgx.Matches(m.Text))
-            {
-                var id = match.Value.Substring(2);
-                m.Text = m.Text.Replace(match.Value, $"<a href=\"#{id}\">{match.Value}</a>");
-            }
+        Messages = Model.Messages,
+        IsModer = Model.IsModer,
+    })
 
-            <div id="@m.Id" class="well" style="background-color:@m.Author.Color">
-                <img src="@m.Author.AvatarUrl" height="50" />            
-                <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.Author.Id">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime() - <a href="#newMessageText" onclick="replyToMessage(@m.Id)">reply</a></p>
-                
-                
-
-                
-
-                <p>@Html.Raw(m.Text.Replace("\n", " <br />"))</p>
-
-                @if (!string.IsNullOrEmpty(m.PictureUrl))
-                {
-                    <p><a target="_blank" href="@m.PictureUrl"><img src="@m.PictureUrl" height="300" /></a></p>
-                }
-                
-                
-                
-                
-
-
-                @{
-                    if (Model.IsModer)
-                    {
-                        <button onclick="removeMessage(@m.Id)">DELETE</button>
-                    }
-                }
-            </div>
-            
-        }
-    }
-    else
-    {
-        <h1>No messages found</h1>
-    }
-}
 @if (!Model.Topic.IsClosed)
 {
     <br />

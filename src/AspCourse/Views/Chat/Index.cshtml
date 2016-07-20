@@ -1,4 +1,5 @@
 ﻿@using AspCourse.Models.ChatModels;
+@using AspCourse.Models.ChatModels.ChatViewModels;
 @model AspCourse.Models.ChatModels.ChatViewModels.IndexViewModel
 
 <script>
@@ -162,33 +163,12 @@
                 
             </div>
             <div style="margin-left:150px">
-                @{                    
-                    foreach(Message m in p.Item2.Skip(1))
-                    {
-                        <div class="well" style="background-color:@m.Author.Color">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <img src="@m.Author.AvatarUrl" width="50" />
-                                    </td>
-                                    <td width="30px"></td>
-                                    <td>
-                                        <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.Author.UserName">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
-                                        <p>@m.Text</p>
-                                        @if (!string.IsNullOrEmpty(m.PictureUrl))
-                                        {
-                                            <p><a target="_blank" href="@m.PictureUrl"><img src="@m.PictureUrl" height="300" /></a></p>
-                                        }
-                                    </td>
-                                </tr>
-                            </table>
-                                        
-                            
-
-                        </div>
-                    }
-                    
-            }
+                @Html.Partial("MessagesListPartial", new MessagesListPartialViewModel()
+                {
+                    Messages = p.Item2.Skip(1).ToList(),
+                    IsModer = false,
+                    NumOfMessages = 2,
+                })
             </div>
     }
 
