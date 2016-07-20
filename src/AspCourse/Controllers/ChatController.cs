@@ -171,9 +171,19 @@ namespace AspCourse.Controllers
         [Authorize(Roles = "moder")]
         public IActionResult RemoveMessage(int id)
         {
-            var msg = _context.Messages.First(m => m.Id == id);
+            var msg = _context.Messages
+                .Include(m => m.Topic)
+                .Include(m=>m.Topic.Messages)                
+                .First(m => m.Id == id);
+
+            if(msg.Topic.Messages.Count == 1)
+            {
+                return RemoveTopic(msg.Topic.Id);
+            }
+
             _context.Messages.Remove(msg);
-            _context.SaveChanges();
+            _context.SaveChanges();            
+
             return Json("Message removed");
             
         }

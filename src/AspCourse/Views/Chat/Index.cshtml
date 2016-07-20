@@ -71,29 +71,34 @@
 
 </script>
 <br /><br />
-<p><input class="form-control" placeholder="New Topic Title" type="text" id="newTopicTitle" /></p>
-<p><textarea id="newTopicText" cols="100" rows="10" placeholder="Enter Message text here"></textarea></p>
-<p><input id="newMessagePictureUrl" class="form-control" placeholder="Enter Picture Url text here" /></p>
+<center>
+    <p><input class="form-control" placeholder="New Topic Title" type="text" id="newTopicTitle" /></p>
+    <p><textarea id="newTopicText" cols="100" rows="10" placeholder="Enter Message text here"></textarea></p>
+    <p><input id="newMessagePictureUrl" class="form-control" placeholder="Enter Picture Url text here" /></p>
 
-<form id="uploadForm" enctype="multipart/form-data">
-    <input type="file" name="file" onchange="uploadImage()" />
-</form>
+    <p>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" onchange="uploadImage()" />
+        </form>
+    </p>
+    
 
-<button class="btn btn-default" onclick="sendNewTopic()">New Topic</button>
+    <button class="btn btn-default" onclick="sendNewTopic()">New Topic</button>
+</center>
 <br />
 <br />
 
 @{
-    
-    
-        foreach (var p in Model.Previews
-            .OrderByDescending(p => p.Item3)
-            .OrderByDescending(p => p.Item1.IsSticky))
-        {
-            Topic t = p.Item1;
 
 
-            <div class="well" style="background-color:@t.Author.Color">
+    foreach (var p in Model.Previews
+        .OrderByDescending(p => p.Item3)
+        .OrderByDescending(p => p.Item1.IsSticky))
+    {
+        Topic t = p.Item1;
+        var opMessage = p.Item2.First();
+
+            <div class="well" style="background-color:@opMessage.Author.Color">
                 <h2>
                     @if (t.IsSticky)
                     {
@@ -130,37 +135,55 @@
                             {
                                 <button style="background-color:red" onclick="toggleTopicClosed(@t.Id)">CLOSED</button>
                             }
-
                         </span>
                     }                
 
                 </h2>
-                @{ var opMessage = p.Item2.FirstOrDefault();}
-                @if (opMessage != null)
-                {
-                    <hr />
-                    <img src="@opMessage.Author.AvatarUrl" width="50" />
-                    <p>@opMessage.Id - <a href="~/Profile/GetUser/?username=@opMessage.Author.UserName">@opMessage.Author.NickName</a> - @opMessage.CreatedAt.ToLocalTime()</p>
-                    <p>@opMessage.Text</p>
-                    @if (!string.IsNullOrEmpty(opMessage.PictureUrl))
-                    {
-                        <p><a target="_blank" href="@opMessage.PictureUrl"><img src="@opMessage.PictureUrl" height="300" /></a></p>
-                    }
-                }
+                
+                <hr />
+                <table>
+                    <tr>
+                        <td>
+                            <img src="@opMessage.Author.AvatarUrl" width="50" />
+                        </td>
+                        <td width="30px"></td>
+                        <td>
+                            <p>@opMessage.Id - <a href="~/Profile/GetUser/?username=@opMessage.Author.UserName">@opMessage.Author.NickName</a> - @opMessage.CreatedAt.ToLocalTime()</p>
+                            <p>@opMessage.Text</p>
+                            @if (!string.IsNullOrEmpty(opMessage.PictureUrl))
+                            {
+                                <p><a target="_blank" href="@opMessage.PictureUrl"><img src="@opMessage.PictureUrl" height="300" /></a></p>
+                            }
+                        </td>
+                    </tr>
+                </table>
+                    
+                   
                 
             </div>
             <div style="margin-left:150px">
                 @{                    
-                    foreach(Message m in p.Item2)
+                    foreach(Message m in p.Item2.Skip(1))
                     {
                         <div class="well" style="background-color:@m.Author.Color">
-                            <img src="@m.Author.AvatarUrl" width="50" />            
-                            <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.Author.UserName">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
-                            <p>@m.Text</p>
-                            @if (!string.IsNullOrEmpty(m.PictureUrl))
-                            {
-                                <p><a target="_blank" href="@m.PictureUrl"><img src="@m.PictureUrl" height="300" /></a></p>
-                            }
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img src="@m.Author.AvatarUrl" width="50" />
+                                    </td>
+                                    <td width="30px"></td>
+                                    <td>
+                                        <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.Author.UserName">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
+                                        <p>@m.Text</p>
+                                        @if (!string.IsNullOrEmpty(m.PictureUrl))
+                                        {
+                                            <p><a target="_blank" href="@m.PictureUrl"><img src="@m.PictureUrl" height="300" /></a></p>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                                        
+                            
 
                         </div>
                     }
