@@ -9,15 +9,9 @@
 }
 @if(Model.Messages != null)
 {
-    var rgx = new Regex("\\>>.*\\d");
-    var take = Model.Messages.Count;
+    var rgx = new Regex("\\>>.*\\d");     
 
-    if(Model.NumOfMessages != 0)
-    {
-        take = Model.NumOfMessages;
-    }    
-
-    foreach (Message m in Model.Messages.Take(take).OrderBy(m => m.CreatedAt))
+    foreach (Message m in Model.Messages.OrderBy(m => m.CreatedAt))
     {
         foreach (Match match in rgx.Matches(m.Text))
         {

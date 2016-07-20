@@ -10,25 +10,22 @@
 <h1>
     @if (Model.Topic.IsSticky)
     {
-        <abbr title="Thread is sticky"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></abbr>
+        <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
     }
     @if (Model.Topic.IsClosed)
     {
-        <abbr title="Thread is closed"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></abbr>
-        
+        <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
     }
-
     @Model.Topic.Title
 </h1>
-
 
 <hr />
 
 @Html.Partial("MessagesListPartial", new MessagesListPartialViewModel()
-    {
-        Messages = Model.Messages,
-        IsModer = Model.IsModer,
-    })
+{
+    Messages = Model.Messages,
+    IsModer = Model.IsModer,
+})
 
 @if (!Model.Topic.IsClosed)
 {

@@ -101,8 +101,7 @@
                 @Html.Partial("MessagesListPartial", new MessagesListPartialViewModel()
                 {
                     Messages = p.Item2.Skip(1).ToList(),
-                    IsModer = false,
-                    NumOfMessages = 2,
+                    IsModer = Model.IsModer,
                 })
             </div>
     }

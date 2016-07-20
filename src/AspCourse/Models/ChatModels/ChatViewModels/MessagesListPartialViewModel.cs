@@ -7,8 +7,6 @@ namespace AspCourse.Models.ChatModels.ChatViewModels
 {
     public class MessagesListPartialViewModel
     {
-        public int NumOfMessages { get; set; }
-
         public bool IsModer { get; set; }
         
         public List<Message> Messages { get; set; }
