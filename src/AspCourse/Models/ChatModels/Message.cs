@@ -28,8 +28,7 @@ namespace AspCourse.Models.ChatModels
         public string Text { get; set; }      
         
         public DateTime CreatedAt { get; set; }
-
-
+        
         
         
     }

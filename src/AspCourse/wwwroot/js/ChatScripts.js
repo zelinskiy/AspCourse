@@ -9,7 +9,7 @@ function sendNewMessage(id) {
         },
         success: function (data) {
             console.log(data);
-            if (data == "YOU ARE MUTED") {
+            if (data === "YOU ARE MUTED") {
                 alert("You are muted!");
             }
             window.location.reload();
@@ -24,7 +24,7 @@ function toggleLikeMessage(id) {
             console.log(data);
             window.location.reload();
         }
-    })
+    });
 }
 
 function removeMessage(id) {
@@ -34,7 +34,7 @@ function removeMessage(id) {
             console.log(data);
             window.location.reload();
         }
-    })
+    });
 }
 
 function replyToMessage(id) {
@@ -84,7 +84,7 @@ function removeTopic(id) {
             console.log(data);
             window.location.reload();
         }
-    })
+    });
 }
 
 
@@ -96,7 +96,7 @@ function toggleTopicSticked(id) {
             console.log(data);
             window.location.reload();
         }
-    })
+    });
 }
 
 
@@ -108,6 +108,6 @@ function toggleTopicClosed(id) {
             console.log(data);
             window.location.reload();
         }
-    })
+    });
 }
 

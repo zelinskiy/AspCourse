@@ -260,6 +260,7 @@ namespace AspCourse.Controllers
             {
                 _context.Likes.Add(new Like()
                 {
+                    Type = "Like",
                     Message = msg,
                     User = Me,
                 });
@@ -272,11 +273,9 @@ namespace AspCourse.Controllers
                 _context.SaveChanges();
                 return Content("Like Removed");
             }
-            
-            
         }
 
-
+        
 
     }
 }

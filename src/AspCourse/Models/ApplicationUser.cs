@@ -27,8 +27,7 @@ namespace AspCourse.Models
         public DateTime LastSeenAt { get; set; }
 
         
-
-        public virtual List<Subscription> Subscriptions { get; set; }
+        
 
         public virtual List<Topic> Topics { get; set; }
 

@@ -8,9 +8,10 @@ using AspCourse.Data;
 namespace AspCourse.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160720102855_Migration6")]
+    partial class Migration6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -87,9 +88,11 @@ namespace AspCourse.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("MessageId");
+                    b.Property<int>("EntityId");
 
-                    b.Property<int?>("TopicId");
+                    b.Property<string>("EntityType");
+
+                    b.Property<int?>("MessageId");
 
                     b.Property<string>("Type");
 
@@ -98,8 +101,6 @@ namespace AspCourse.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MessageId");
-
-                    b.HasIndex("TopicId");
 
                     b.HasIndex("UserId");
 
@@ -131,6 +132,24 @@ namespace AspCourse.Migrations
                     b.HasIndex("TopicId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("AspCourse.Models.ChatModels.Subscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("TopicId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TopicId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("AspCourse.Models.ChatModels.Topic", b =>
@@ -267,10 +286,6 @@ namespace AspCourse.Migrations
                         .WithMany()
                         .HasForeignKey("MessageId");
 
-                    b.HasOne("AspCourse.Models.ChatModels.Topic")
-                        .WithMany()
-                        .HasForeignKey("TopicId");
-
                     b.HasOne("AspCourse.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -287,6 +302,17 @@ namespace AspCourse.Migrations
                         .WithMany()
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("AspCourse.Models.ChatModels.Subscription", b =>
+                {
+                    b.HasOne("AspCourse.Models.ChatModels.Topic")
+                        .WithMany()
+                        .HasForeignKey("TopicId");
+
+                    b.HasOne("AspCourse.Models.ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("AspCourse.Models.ChatModels.Topic", b =>

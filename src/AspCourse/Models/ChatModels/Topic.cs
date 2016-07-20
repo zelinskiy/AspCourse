@@ -15,10 +15,11 @@ namespace AspCourse.Models.ChatModels
 
         public List<Message> Messages { get; set; }
 
-        
-        public ApplicationUser Author { get; set; }
+        public virtual List<Like> Likes { get; set; }
 
-        public virtual List<Subscription> Subscriptions { get; set; }
+
+        public ApplicationUser Author { get; set; }
+        
 
         [Required]
         public string Title { get; set; }

@@ -11,7 +11,7 @@ namespace AspCourse.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }       
@@ -21,7 +21,7 @@ namespace AspCourse.Controllers
             return View();
         }
         
-        public async Task<IActionResult> Banned()
+        public IActionResult Banned()
         {
             return View();
         }
