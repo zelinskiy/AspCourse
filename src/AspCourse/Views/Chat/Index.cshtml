@@ -10,7 +10,7 @@
 <center>
     <p><input class="form-control" placeholder="New Topic Title" type="text" id="newTopicTitle" /></p>
     <p><textarea id="newTopicText" cols="100" rows="10" placeholder="Enter Message text here"></textarea></p>
-    <p><input id="newMessagePictureUrl" class="form-control" placeholder="Enter Picture Url text here" /></p>
+    <p><input id="imageUrlPicker" class="form-control" placeholder="Enter Picture Url text here" /></p>
 
     <p>
         <form id="uploadForm" enctype="multipart/form-data">
@@ -38,47 +38,50 @@
             <h2>
                 @if (t.IsSticky)
                 {
-                    <abbr title="Thread is sticky"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></abbr>
+                    <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
                 }
                 @if (t.IsClosed)
                 {
-                    <abbr title="Thread is closed"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></abbr>
+                    <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
                 }
 
 
                 <a href="~/Chat/Topic/@t.Id.ToString()">@t.Title</a>
 
-                <span style="font-size:13px">
+                <span style="font-size:13px">                    
                     Subscribed:@t.Likes.Where(l => l.Type == "Subscription").Count()
-                    <button onclick="toggleSubscribeTopic(@t.Id)">subscribe</button>
                     Messages:@t.Messages.Count()
                     Users:@t.Messages.Select(m=>m.Author).Distinct().Count()
                 </span>
 
-                @if (Model.IsModer)
-                {
-                    <span style="font-size:12px">
+                <span style="font-size:12px">
+                    <button class="btn btn-default"  onclick="toggleSubscribeTopic(@t.Id)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
+                
+                    @if (Model.IsModer)
+                    {
+                    
 
-                        <button onclick="removeTopic(@t.Id)">DELETE</button>
+                            <button  class="btn btn-default"  onclick="removeTopic(@t.Id)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
 
-                        @if (t.IsSticky)
-                        {
-                            <button style="background-color:green" onclick="toggleTopicSticked(@t.Id)">STICKED</button>
-                        }
-                        else
-                        {
-                            <button style="background-color:red" onclick="toggleTopicSticked(@t.Id)">STICKED</button>
-                        }
-                        @if (t.IsClosed)
-                        {
-                            <button style="background-color:green" onclick="toggleTopicClosed(@t.Id)">CLOSED</button>
-                        }
-                        else
-                        {
-                            <button style="background-color:red" onclick="toggleTopicClosed(@t.Id)">CLOSED</button>
-                        }
-                    </span>
-                }
+                            @if (t.IsSticky)
+                            {
+                                <button class="btn btn-default" style="background-color:green" onclick="toggleTopicSticked(@t.Id)"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-default" style="background-color:red" onclick="toggleTopicSticked(@t.Id)"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></button>
+                            }
+                            @if (t.IsClosed)
+                            {
+                                <button class="btn btn-default" style="background-color:green" onclick="toggleTopicClosed(@t.Id)"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-default" style="background-color:red" onclick="toggleTopicClosed(@t.Id)"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></button>
+                            }
+                    
+                    }
+                </span>
 
             </h2>
 

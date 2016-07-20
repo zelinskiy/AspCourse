@@ -13,7 +13,7 @@ namespace AspCourse.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Chat");
         }       
 
         public IActionResult Error()

@@ -16,7 +16,8 @@ namespace AspCourse.Controllers
 {
     [Authorize]
     public class ProfileController : Controller
-    {       
+    {
+        bool SETROLES = false;
         public ApplicationDbContext _context;
         UserManager<ApplicationUser> userManager;
 
@@ -30,12 +31,25 @@ namespace AspCourse.Controllers
             userManager = _userManager;            
         }
         
+        private ApplicationUser Me
+        {
+            get
+            {
+                return userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            }
+        }
         
 
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (SETROLES)
+            {
+                if (!User.IsInRole("moder"))
+                    await userManager.AddToRoleAsync(Me, "moder");
+            }
+            
             return GetUser(User.Identity.Name);   
         }
 

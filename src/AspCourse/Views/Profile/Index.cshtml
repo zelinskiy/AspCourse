@@ -1,15 +1,18 @@
 ﻿@model AspCourse.Models.AccountViewModels.ProfileViewModel
 
-<script>
+<script >
+
+    //++++++++++++++++++++++++++PROFILE++++++++++++++++++++++++++++++++
+
 
     var isModer = false;
 
     function updateUserData() {
         $.post({
             url: "/Profile/UpdateUser",
-            data:{
-                NickName:$("#NickNamePicker").val(),
-                AvatarUrl: $("#AvatarUrlPicker").val(),
+            data: {
+                NickName: $("#NickNamePicker").val(),
+                AvatarUrl: $("#imageUrlPicker").val(),
                 Color: $("#ColorPicker").val()
             },
             success: function (data) {
@@ -20,11 +23,11 @@
     }
 
 
-    function banUser() {      
+    function banUser() {
         $.post({
             url: "/Profile/Ban/?username=@Model.User.UserName&time=" + getDeltaTime(),
             success: function (data) {
-                console.log(data);                
+                console.log(data);
                 window.location.reload();
             }
         });
@@ -71,7 +74,7 @@
             url: "/Profile/IsModer/?username=@Model.User.UserName",
             success: function (data) {
                 console.log(data);
-                if (data.toString().indexOf("true")>-1) {
+                if (data.toString().indexOf("true") > -1) {
                     $("#toggleModerButton").css("background-color", "green");
                 }
                 else {
@@ -94,20 +97,20 @@
 
 
 
-    
+
 
     function uploadImage() {
         var data = new FormData($("#uploadForm")[0]);
 
         $.ajax({
-            url: '@Url.Action("AddFile", "File")',
+            url: "/File/AddFile",
             type: "POST",
             data: data,
             contentType: false,
             dataType: false,
             processData: false,
             success: function (result) {
-                $("#AvatarUrlPicker").val("/uploads/" + result);
+                $("#imageUrlPicker").val("/uploads/" + result);
             }
         });
     }
@@ -116,10 +119,11 @@
     $(document).ready(function () {
         isUserModer();
     });
-
-
-
 </script>
+<br/>
+
+<img src="@Model.User.AvatarUrl" width="300px" />
+<hr />
 
 @{ 
     if (Model.User.IsBanned)
@@ -139,62 +143,62 @@
     {
         if (Model.User.IsBanned)
         {
-            <button onclick="unBanUser()">UNBAN</button>
+            <button class="btn btn-default" onclick="unBanUser()">UNBAN</button>
         }
         else
         {
-            <button onclick="banUser()">BAN</button>
+            <button class="btn btn-default" onclick="banUser()">BAN</button>
         }
         if (Model.User.IsMuted)
         {
-            <button onclick="unMuteUser()">UNMUTE</button>
+            <button class="btn btn-default" onclick="unMuteUser()">UNMUTE</button>
         }
         else
         {
-            <button onclick="muteUser()">MUTE</button>
+            <button class="btn btn-default" onclick="muteUser()">MUTE</button>
         }
 
-        <button id="toggleModerButton" onclick="toggleUserModer()">MODER</button>
+        <button class="btn btn-default" id="toggleModerButton" onclick="toggleUserModer()">MODER</button>
 
         <input type="datetime-local" value="" id="dateTimePicker"/>
-        <button onclick="f()">!!!</button>
     }
 }
-<hr />
 
-<img src="@Model.User.AvatarUrl" width="300px"/>
 <hr />
 <p>Id: @Model.User.Id</p>
 <p>NickName: @Model.User.NickName</p>
 <p>UserName: @Model.User.UserName</p>
 <p>Registered: @Model.User.RegisteredAt.ToLocalTime()</p>
-<p>Last Seen: @Model.User.LastSeenAt.ToLocalTime()</p>
-<hr />
+<p>Last Seen: @Model.User.LastSeenAt</p>
+
 
 <hr />
 @{
     if (Model.IsMyself)
     {
         <p>Color: <input type="color" id="ColorPicker" value="@Model.User.Color" /></p>
-        <p>Avatar: <input type="text" id="AvatarUrlPicker" value="@Model.User.AvatarUrl" /></p>
+        <p>Avatar: <input type="text" id="imageUrlPicker" value="@Model.User.AvatarUrl" /></p>
 
         <form id="uploadForm" enctype="multipart/form-data">
             <input type="file" name="file" onchange="uploadImage()" />
         </form>
 
         <p>NickName: <input type="text" id="NickNamePicker" value="@Model.User.NickName" /></p>
-        <p><button onclick="updateUserData()">Update profile</button></p>
+        <p><button class="btn btn-default" onclick="updateUserData()">Update profile</button></p>
     }
 }
 
 <hr />
 @if (Model.IsMyself)
 {
+    <a href="/Profile/Index">Messages</a>
     <a href="/Profile/MySubscriptions">Subscriptions</a>
     <a href="/Profile/MyLikes">Liked</a>
     <a href="/Profile/MyDislikes">Disliked</a>
     <a href="/Profile/MyStars">Starred</a>
 }
+<hr />
+
 
 <h2>@ViewData["MessageListTitle"]</h2>
 @{    

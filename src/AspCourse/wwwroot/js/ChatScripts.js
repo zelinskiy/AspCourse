@@ -5,7 +5,7 @@ function sendNewMessage(id) {
         data: {
             NewMessageText: $('#newMessageText').val(),
             NewMessageTopicId: id,
-            NewMessagePictureUrl: $('#newMessagePictureUrl').val()
+            NewMessagePictureUrl: $('#imageUrlPicker').val()
         },
         success: function (data) {
             console.log(data);
@@ -37,21 +37,7 @@ function replyToMessage(id) {
 
 
 
-function uploadImage() {
-    var data = new FormData($("#uploadForm")[0]);
 
-    $.ajax({
-        url: "/File/AddFile",
-        type: "POST",
-        data: data,
-        contentType: false,
-        dataType: false,
-        processData: false,
-        success: function (result) {
-            $("#newMessagePictureUrl").val("/uploads/" + result);
-        }
-    });
-}
 
 
 function sendNewTopic() {
@@ -60,7 +46,7 @@ function sendNewTopic() {
         data: {
             NewMessageText: $('#newTopicText').val(),
             NewTopicTitle: $('#newTopicTitle').val(),
-            NewMessagePictureUrl: $('#newMessagePictureUrl').val()
+            NewMessagePictureUrl: $('#imageUrlPicker').val()
         },
         success: function (data) {
             window.location.reload();
@@ -115,3 +101,20 @@ function toggleLike(id,entity, type) {
         }
     });
 }
+
+function uploadImage() {
+    var data = new FormData($("#uploadForm")[0]);
+
+    $.ajax({
+        url: "/File/AddFile",
+        type: "POST",
+        data: data,
+        contentType: false,
+        dataType: false,
+        processData: false,
+        success: function (result) {
+            $("#imageUrlPicker").val("/uploads/" + result);
+        }
+    });
+}
+

@@ -41,8 +41,11 @@ namespace AspCourse.Controllers
 
 
         [HttpGet]
-         public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            Me.LastSeenAt = DateTime.Now;
+            await userManager.UpdateAsync(Me);
+
             var previews = new List<Tuple<Topic, List<Message>, DateTime>>();
 
             foreach(Topic t in _context.Topics
@@ -215,7 +218,7 @@ namespace AspCourse.Controllers
                 .Include(t=>t.Messages)
                 .First(t => t.Id == id);    
 
-            var likesToRemove = _context.Likes.Where(l => l.Message.Topic.Id == topic.Id);
+            var likesToRemove = _context.Likes.Where(l => l.Message.Topic.Id == topic.Id || l.Topic.Id == topic.Id);
             _context.Likes.RemoveRange(likesToRemove);
 
             _context.Messages.RemoveRange(topic.Messages);            

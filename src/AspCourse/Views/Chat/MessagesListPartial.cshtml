@@ -32,13 +32,13 @@
             
             @if (Model.IsModer)
             {
-                <button onclick="removeMessage(@m.Id)">DELETE</button>
+                <button class="btn btn-default" onclick="removeMessage(@m.Id)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
             }
-            <button onclick="toggleLike(@m.Id, 'Message', 'Like')">like</button>
+            <button class="btn btn-default" onclick="toggleLike(@m.Id, 'Message', 'Like')"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
             @m.Likes.Where(l => l.Type == "Like").Count()
-            <button onclick="toggleLike(@m.Id, 'Message', 'Dislike')">dislike</button>
+            <button class="btn btn-default" onclick="toggleLike(@m.Id, 'Message', 'Dislike')"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
             @m.Likes.Where(l => l.Type == "Dislike").Count()
-            <button onclick="toggleLike(@m.Id, 'Message', 'Star')">star</button>
+            <button class="btn btn-default" onclick="toggleLike(@m.Id, 'Message', 'Star')"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>
             @m.Likes.Where(l => l.Type == "Star").Count()
             
         </div>
