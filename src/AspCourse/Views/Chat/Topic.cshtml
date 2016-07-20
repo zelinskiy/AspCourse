@@ -7,6 +7,7 @@
     <script src="~/js/ChatScripts.js"></script>
 }
 
+
 <h1>
     @if (Model.Topic.IsSticky)
     {
@@ -18,7 +19,10 @@
     }
     @Model.Topic.Title
 </h1>
-
+<span style="font-size:13px">
+    Subscribed:@Model.Topic.Likes.Where(l => l.Type == "Subscription").Count()
+    <button onclick="toggleSubscribeTopic(@Model.Topic.Id)">subscribe</button>
+</span>
 <hr />
 
 @Html.Partial("MessagesListPartial", new MessagesListPartialViewModel()

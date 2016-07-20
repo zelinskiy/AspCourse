@@ -17,15 +17,7 @@ function sendNewMessage(id) {
     });
 }
 
-function toggleLikeMessage(id) {
-    $.post({
-        url: "/Chat/ToggleLikeMessage/" + id,
-        success: function (data) {
-            console.log(data);
-            window.location.reload();
-        }
-    });
-}
+
 
 function removeMessage(id) {
     $.post({
@@ -103,7 +95,6 @@ function toggleTopicSticked(id) {
 function toggleTopicClosed(id) {
     $.post({
         url: "/Chat/ToggleTopicClosed/?id=" + id,
-        type: "POST",
         success: function (data) {
             console.log(data);
             window.location.reload();
@@ -111,3 +102,16 @@ function toggleTopicClosed(id) {
     });
 }
 
+function toggleSubscribeTopic(id) {
+    toggleLike(id, "Topic", "Subscription");
+}
+
+function toggleLike(id,entity, type) {
+    $.post({
+        url: "/Chat/ToggleLike" + entity + "/?id=" + id +"&type=" + type ,
+        success: function (data) {
+            console.log(data);
+            window.location.reload();
+        }
+    });
+}

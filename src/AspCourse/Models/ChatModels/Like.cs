@@ -10,7 +10,7 @@ namespace AspCourse.Models.ChatModels
         public int Id { get; set; }
 
         public string Type { get; set; }
-
+        
         public virtual Message Message { get; set; }
         
         public virtual Topic Topic { get; set; }

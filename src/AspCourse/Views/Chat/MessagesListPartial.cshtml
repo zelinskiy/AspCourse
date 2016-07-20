@@ -34,8 +34,12 @@
             {
                 <button onclick="removeMessage(@m.Id)">DELETE</button>
             }
-            <button onclick="toggleLikeMessage(@m.Id)">like</button>
-            <p>@m.Likes.Count</p>
+            <button onclick="toggleLike(@m.Id, 'Message', 'Like')">like</button>
+            @m.Likes.Where(l => l.Type == "Like").Count()
+            <button onclick="toggleLike(@m.Id, 'Message', 'Dislike')">dislike</button>
+            @m.Likes.Where(l => l.Type == "Dislike").Count()
+            <button onclick="toggleLike(@m.Id, 'Message', 'Star')">star</button>
+            @m.Likes.Where(l => l.Type == "Star").Count()
             
         </div>
             

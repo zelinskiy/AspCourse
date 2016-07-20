@@ -46,14 +46,15 @@ namespace AspCourse.Controllers
             var previews = new List<Tuple<Topic, List<Message>, DateTime>>();
 
             foreach(Topic t in _context.Topics
-                .Include(x=>x.Messages)                
-                .Include(x=>x.Author)
+                .Include(t=>t.Messages)                
+                .Include(t=>t.Author)
+                .Include(t=>t.Likes)
                 .ToList())
             {
                 var messagesInTopic = _context.Messages
                     .Include(m => m.Author)
-                    .Include(m => m.Topic)
-                    .Include(m=>m.Likes)
+                    .Include(m => m.Topic)                    
+                    .Include(m => m.Likes)
                     .Where(m=>t.Id == m.Topic.Id);
                 
                 previews.Add(new Tuple<Topic, List<Message>, DateTime>(
@@ -77,7 +78,9 @@ namespace AspCourse.Controllers
         [HttpGet]
         public IActionResult Topic(int id)
         {
-            Topic topic = _context.Topics.FirstOrDefault(t => t.Id == id);
+            Topic topic = _context.Topics
+                .Include(t=>t.Likes)
+                .FirstOrDefault(t => t.Id == id);
 
             if (topic == null) return RedirectToAction("Index");
 
@@ -248,34 +251,79 @@ namespace AspCourse.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ToggleLikeMessage(int id)
+        public IActionResult ToggleLikeMessage(int id, string type)
         {
-            var msg = await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
-            if (msg == null) return Content("Message not found");
-            
+            var result = ToggleMessageLike(id, type);
+            return result?Content(type + " Toggled"): Content("Failed");            
+        }
 
-            var oldLike = _context.Likes.FirstOrDefault(l => l.Message.Id == msg.Id && l.User.Id == Me.Id);
+        [HttpPost]
+        public IActionResult ToggleLikeTopic(int id, string type)
+        {
+            var result = ToggleTopicLike(id, type);
+            return result ? Content(type + " Toggled") : Content("Failed");
+        }
+
+
+
+        private bool ToggleMessageLike(int id, string LikeType)
+        {
+            var msg = _context.Messages.FirstOrDefault(m => m.Id == id);
+            if (msg == null) return false;
+
+            var oldLike = _context.Likes
+                .FirstOrDefault(
+                l => l.Message.Id == msg.Id 
+                && l.User.Id == Me.Id 
+                && l.Type == LikeType
+                );
 
             if (oldLike == null)
             {
                 _context.Likes.Add(new Like()
                 {
-                    Type = "Like",
+                    Type = LikeType,
                     Message = msg,
                     User = Me,
                 });
-                _context.SaveChanges();
-                return Content("Like Added");
+            }
+            else
+            {
+                _context.Likes.Remove(oldLike);                
+            }
+            _context.SaveChanges();
+            return true;
+        }
+        
+        private bool ToggleTopicLike(int id, string LikeType)
+        {
+            var topic = _context.Topics.FirstOrDefault(t => t.Id == id);
+            if (topic == null) return false;
+
+            var oldLike = _context.Likes
+                .FirstOrDefault(
+                l => l.Topic.Id == topic.Id 
+                && l.User.Id == Me.Id
+                && l.Type == LikeType);
+
+            if (oldLike == null)
+            {
+                _context.Likes.Add(new Like()
+                {
+                    Type = LikeType,
+                    Topic = topic,
+                    User = Me,
+                });
             }
             else
             {
                 _context.Likes.Remove(oldLike);
-                _context.SaveChanges();
-                return Content("Like Removed");
             }
+            _context.SaveChanges();
+            return true;
         }
 
-        
+
 
     }
 }
