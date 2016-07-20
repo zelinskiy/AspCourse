@@ -182,8 +182,11 @@ namespace AspCourse.Controllers
         [Authorize(Roles = "moder")]
         public IActionResult RemoveTopic(int id)
         {
-            var topic = _context.Topics.First(t => t.Id == id);            
-            //_context.Messages.RemoveRange(topic.Messages);
+            var topic = _context.Topics
+                .Include(t=>t.Messages)
+                .First(t => t.Id == id); 
+                       
+            _context.Messages.RemoveRange(topic.Messages);
             _context.Topics.Remove(topic);
             _context.SaveChanges();
             return Json("Topic removed");
