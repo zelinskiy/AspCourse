@@ -13,5 +13,7 @@ namespace AspCourse.Models.ChatModels
         
         public virtual Message Message { get; set; }
         
+        public virtual ApplicationUser User { get; set; }
+
     }
 }

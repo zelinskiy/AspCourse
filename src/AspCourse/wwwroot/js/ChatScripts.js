@@ -17,6 +17,16 @@ function sendNewMessage(id) {
     });
 }
 
+function toggleLikeMessage(id) {
+    $.post({
+        url: "/Chat/ToggleLikeMessage/" + id,
+        success: function (data) {
+            console.log(data);
+            window.location.reload();
+        }
+    })
+}
+
 function removeMessage(id) {
     $.post({
         url: "/Chat/RemoveMessage/?id=" + id,

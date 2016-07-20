@@ -20,6 +20,7 @@ namespace AspCourse.Models.ChatModels
         [Required]
         public virtual ApplicationUser Author { get; set; }
 
+        public virtual List<Like> Likes { get; set; }
 
         public string PictureUrl { get; set; }
 
@@ -27,6 +28,8 @@ namespace AspCourse.Models.ChatModels
         public string Text { get; set; }      
         
         public DateTime CreatedAt { get; set; }
+
+
         
         
     }

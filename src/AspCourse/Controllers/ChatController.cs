@@ -31,6 +31,14 @@ namespace AspCourse.Controllers
         }
 
 
+        private ApplicationUser Me
+        {
+            get
+            {
+                return userManager.Users.First(u => u.UserName == User.Identity.Name);
+            }
+        }
+
 
         [HttpGet]
          public IActionResult Index()
@@ -45,6 +53,7 @@ namespace AspCourse.Controllers
                 var messagesInTopic = _context.Messages
                     .Include(m => m.Author)
                     .Include(m => m.Topic)
+                    .Include(m=>m.Likes)
                     .Where(m=>t.Id == m.Topic.Id);
                 
                 previews.Add(new Tuple<Topic, List<Message>, DateTime>(
@@ -75,7 +84,11 @@ namespace AspCourse.Controllers
             TopicViewModel model = new TopicViewModel()
             {
                 Topic = topic,
-                Messages = _context.Messages.Include(m=>m.Author).Where(m=>m.Topic.Id == topic.Id).ToList(),
+                Messages = _context.Messages
+                    .Include(m=>m.Author)
+                    .Include(m => m.Likes)
+                    .Where(m=>m.Topic.Id == topic.Id)
+                    .ToList(),
                 IsModer = User.IsInRole("moder"),
             };
                         
@@ -100,18 +113,18 @@ namespace AspCourse.Controllers
                 }
                 else
                 {
-                    return Json("YOU ARE MUTED");
+                    return Content("YOU ARE MUTED");
                 }                
             }
 
             var topic = _context.Topics.First(t => t.Id == model.NewMessageTopicId);
             if (topic==null)
             {
-                return Json("TOPIC NOT FOUND");
+                return Content("TOPIC NOT FOUND");
             }
             else if (topic.IsClosed)
             {
-                return Json("YOU CANT POST TO CLOSED TOPIC");
+                return Content("YOU CANT POST TO CLOSED TOPIC");
             }
 
 
@@ -126,7 +139,7 @@ namespace AspCourse.Controllers
             _context.Messages.Add(newMsg);
             _context.SaveChanges();
 
-            return Json("OK");
+            return Content("OK");
         }
 
         [HttpPost]
@@ -163,7 +176,7 @@ namespace AspCourse.Controllers
             
             
 
-            return Json($"Topic #{newTopic.Id} added!");
+            return Content($"Topic #{newTopic.Id} added!");
             
         }
 
@@ -181,10 +194,13 @@ namespace AspCourse.Controllers
                 return RemoveTopic(msg.Topic.Id);
             }
 
+            var likesToRemove = _context.Likes.Where(l => l.Message.Id == id);
+            _context.Likes.RemoveRange(likesToRemove);
+
             _context.Messages.Remove(msg);
             _context.SaveChanges();            
 
-            return Json("Message removed");
+            return Content("Message removed");
             
         }
 
@@ -194,12 +210,15 @@ namespace AspCourse.Controllers
         {
             var topic = _context.Topics
                 .Include(t=>t.Messages)
-                .First(t => t.Id == id); 
-                       
-            _context.Messages.RemoveRange(topic.Messages);
+                .First(t => t.Id == id);    
+
+            var likesToRemove = _context.Likes.Where(l => l.Message.Topic.Id == topic.Id);
+            _context.Likes.RemoveRange(likesToRemove);
+
+            _context.Messages.RemoveRange(topic.Messages);            
             _context.Topics.Remove(topic);
             _context.SaveChanges();
-            return Json("Topic removed");
+            return Content("Topic removed");
                      
         }
 
@@ -211,7 +230,7 @@ namespace AspCourse.Controllers
             topic.IsSticky = !topic.IsSticky;
             _context.Topics.Update(topic);
             _context.SaveChanges();
-            return Json($"Topic sticky: {topic.IsSticky}");            
+            return Content($"Topic sticky: {topic.IsSticky}");            
         }
 
         [HttpPost]
@@ -222,11 +241,40 @@ namespace AspCourse.Controllers
             topic.IsClosed = !topic.IsClosed;
             _context.Topics.Update(topic);
             _context.SaveChanges();
-            return Json($"Topic closed: {topic.IsClosed}");
+            return Content($"Topic closed: {topic.IsClosed}");
             
         }
 
 
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleLikeMessage(int id)
+        {
+            var msg = await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
+            if (msg == null) return Content("Message not found");
+            
+
+            var oldLike = _context.Likes.FirstOrDefault(l => l.Message.Id == msg.Id && l.User.Id == Me.Id);
+
+            if (oldLike == null)
+            {
+                _context.Likes.Add(new Like()
+                {
+                    Message = msg,
+                    User = Me,
+                });
+                _context.SaveChanges();
+                return Content("Like Added");
+            }
+            else
+            {
+                _context.Likes.Remove(oldLike);
+                _context.SaveChanges();
+                return Content("Like Removed");
+            }
+            
+            
+        }
 
 
 

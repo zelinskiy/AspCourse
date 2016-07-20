@@ -90,6 +90,8 @@
                             {
                                 <p><a target="_blank" href="@opMessage.PictureUrl"><img src="@opMessage.PictureUrl" height="300" /></a></p>
                             }
+                            <button onclick="toggleLikeMessage(@opMessage.Id)">like</button>
+                            <p>@opMessage.Likes.Count</p>
                         </td>
                     </tr>
                 </table>

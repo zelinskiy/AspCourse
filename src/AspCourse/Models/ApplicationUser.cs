@@ -34,5 +34,7 @@ namespace AspCourse.Models
 
         public virtual List<Message> Messages { get; set; }
 
+        public virtual List<Like> Likes { get; set; }
+
     }
 }
