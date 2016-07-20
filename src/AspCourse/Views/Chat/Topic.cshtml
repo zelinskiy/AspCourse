@@ -27,9 +27,8 @@
     }
 
     function removeMessage(id){
-        $.ajax({
+        $.post({
             url: "/Chat/RemoveMessage/?id=" + id,
-            type:"DELETE",
             success:function(data){
                 console.log(data);   
                 window.location.reload();

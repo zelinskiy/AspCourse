@@ -10,26 +10,37 @@
     <br />
     <p><a href="/Profile/AllProfiles">Users</a><span  style="width:25px;display: inline-block"></span><a href="/Profile/AllModers">Moderators</a></p>
     <h1>@ViewData["ListTitle"]</h1>
-    foreach (var user in Model.Users.OrderBy(u => (u.IsBanned ? 10 : 0) + (u.IsMuted ? 5 : 0)))
+    if (Model.Users != null)
     {
-        
-        <p><img src="@user.AvatarUrl" height="100px"/></p>
-        <p><a href="/Profile/GetUser/?username=@user.UserName">@user.NickName</a></p>
-        <p>@user.UserName - @user.LastSeenAt - @user.RegisteredAt - Muted:@user.IsMuted - Banned:@user.IsBanned</p>
-        <p>Messages: @Model.Messages.Where(m=>m.Author.UserName == user.UserName).Count()</p>
-        
-        var MyMessages = Model.Messages
-            .Where(m => m.Author.UserName == user.UserName)
-            .OrderBy(m => m.CreatedAt);
-        if (MyMessages.Count() > 0)
+        foreach (var user in Model.Users.OrderBy(u => (u.IsBanned ? 10 : 0) + (u.IsMuted ? 5 : 0)))
         {
-            <p>Last Message: @MyMessages.Last().CreatedAt</p>
+
+            <p><img src="@user.AvatarUrl" height="100px" /></p>
+            <p><a href="/Profile/GetUser/?username=@user.UserName">@user.NickName</a></p>
+            <p>@user.UserName - @user.LastSeenAt - @user.RegisteredAt - Muted:@user.IsMuted - Banned:@user.IsBanned</p>
+
+            <p>Messages: @Model.Messages.Where(m => m.Author.UserName == user.UserName).Count()</p>
+
+            var MyMessages = Model.Messages
+                .Where(m => m.Author.UserName == user.UserName)
+                .OrderBy(m => m.CreatedAt);
+            if (MyMessages.Count() > 0)
+            {
+                <p>Last Message: @MyMessages.Last().CreatedAt</p>
+            }
+            else
+            {
+                <p>No Messages yet</p>
+            }
+
+            <hr />
         }
-        else
-        {
-            <p>No Messages yet</p>
-        }
-       
-        <hr />
     }
+    else
+    {
+        <h2>No Users Found</h2>
+
+    }
+
 }
+    

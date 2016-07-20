@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using AspCourse.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System.Security.Claims;
-using AspCourse.Models.ChatModels;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace AspCourse.Controllers
@@ -20,21 +18,15 @@ namespace AspCourse.Controllers
     {       
         public ApplicationDbContext _context;
         UserManager<ApplicationUser> userManager;
-        IServiceProvider serviceProvider;
-        RoleManager<IdentityRole> roleManager;
 
 
         public ProfileController(ApplicationDbContext context,
-            IServiceProvider _serviceProvider,
             UserManager<ApplicationUser> _userManager,
             RoleManager<IdentityRole> _roleManager
             )
         {
             _context = context;
-            userManager = _userManager;
-            serviceProvider = _serviceProvider;
-            roleManager = _roleManager;
-                        
+            userManager = _userManager;            
         }
         
         
@@ -70,33 +62,31 @@ namespace AspCourse.Controllers
         }
 
         [HttpGet]
-        public IActionResult AllProfiles()
+        public async Task<IActionResult> AllProfiles()
         {
-            var model = new AllProfilesViewModel()
-            {
-                Users = userManager.Users.ToList(),
-                Messages = _context.Messages.ToList()
-            };
-
-            ViewData["ListTitle"] = "All Users";
-            return View("~/Views/Profile/AllProfiles.cshtml", model);
-
+            return await UsersInRole("user");
         }
 
         [HttpGet]
-        public async  Task<IActionResult> AllModers()
+        public async Task<IActionResult> AllModers()
+        {
+            return await UsersInRole("moder");
+        }
+
+        
+        private async Task<IActionResult> UsersInRole(string role)
         {
             var model = new AllProfilesViewModel()
             {
-                Users = (await userManager.GetUsersInRoleAsync("moder")).ToList(),
-                Messages = _context.Messages.ToList()
+                Users = (await userManager.GetUsersInRoleAsync(role)).ToList(),
+                Messages = _context.Messages.Include(m => m.Author).ToList()
             };
 
-            
-            ViewData["ListTitle"] = "Moderators";
+            ViewData["ListTitle"] = char.ToUpper(role[0]) + role.Substring(1) + "s";
             return View("~/Views/Profile/AllProfiles.cshtml", model);
-
         }
+
+
 
         //**************************************
 

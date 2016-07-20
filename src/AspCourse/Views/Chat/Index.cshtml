@@ -21,7 +21,6 @@
     function removeTopic(id) {
         $.post({
             url: "/Chat/RemoveTopic/?id=" + id,
-            type:"DELETE",
             success: function (data) {
                 console.log(data);
                 window.location.reload();
@@ -94,8 +93,7 @@
             Topic t = p.Item1;
 
 
-
-            <div class="well" style="background-color:red">
+            <div class="well" style="background-color:@t.Author.Color">
                 <h2>
                     @if (t.IsSticky)
                     {
@@ -137,15 +135,27 @@
                     }                
 
                 </h2>
+                @{ var opMessage = p.Item2.FirstOrDefault();}
+                @if (opMessage != null)
+                {
+                    <hr />
+                    <img src="@opMessage.Author.AvatarUrl" width="50" />
+                    <p>@opMessage.Id - <a href="~/Profile/GetUser/?username=@opMessage.Author.UserName">@opMessage.Author.NickName</a> - @opMessage.CreatedAt.ToLocalTime()</p>
+                    <p>@opMessage.Text</p>
+                    @if (!string.IsNullOrEmpty(opMessage.PictureUrl))
+                    {
+                        <p><a target="_blank" href="@opMessage.PictureUrl"><img src="@opMessage.PictureUrl" height="300" /></a></p>
+                    }
+                }
                 
             </div>
-            <div style="margin-left:30px">
+            <div style="margin-left:150px">
                 @{                    
                     foreach(Message m in p.Item2)
                     {
                         <div class="well" style="background-color:@m.Author.Color">
                             <img src="@m.Author.AvatarUrl" width="50" />            
-                            <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.Author.NickName">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
+                            <p>@m.Id - <a href="~/Profile/GetUser/?username=@m.Author.UserName">@m.Author.NickName</a> - @m.CreatedAt.ToLocalTime()</p>
                             <p>@m.Text</p>
                             @if (!string.IsNullOrEmpty(m.PictureUrl))
                             {

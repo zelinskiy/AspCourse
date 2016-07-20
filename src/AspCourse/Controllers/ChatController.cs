@@ -23,7 +23,8 @@ namespace AspCourse.Controllers
         public ApplicationDbContext _context;
         UserManager<ApplicationUser> userManager;
 
-        public ChatController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager)
+        public ChatController(ApplicationDbContext context,
+            UserManager<ApplicationUser> _userManager)
         {
             _context = context;
             userManager = _userManager;
@@ -166,7 +167,7 @@ namespace AspCourse.Controllers
             
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Authorize(Roles = "moder")]
         public IActionResult RemoveMessage(int id)
         {
@@ -177,11 +178,12 @@ namespace AspCourse.Controllers
             
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Authorize(Roles = "moder")]
         public IActionResult RemoveTopic(int id)
         {
-            var topic = _context.Topics.First(t => t.Id == id);
+            var topic = _context.Topics.First(t => t.Id == id);            
+            //_context.Messages.RemoveRange(topic.Messages);
             _context.Topics.Remove(topic);
             _context.SaveChanges();
             return Json("Topic removed");

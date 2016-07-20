@@ -19,7 +19,7 @@ namespace AspCourse.Controllers
     public class AccountController : Controller
     {
 
-        string[] myRoles = new string[] { "moder", "user" };
+        string[] myRoles = new string[] { "moder", "user", "admin" };
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
